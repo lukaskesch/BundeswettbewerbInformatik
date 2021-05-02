@@ -20,8 +20,8 @@
                     <StackPanel.Resources>
                         <local:Solvers x:Key="mySolvers"/>
                     </StackPanel.Resources>
-                    <Label Content="n = " Margin="10 5 0 5"/>
-                    <TextBox Name="TextBoxInput" Text="5" Width="30" Height="20" Margin="0 5 5 5"/>
+                    <Label Content="n = " Margin="10 5 0 5" VerticalAlignment="Center"/>
+                    <TextBox Name="TextBoxInput" Text="6" Width="30" Height="20" Margin="0 5 5 5"/>
                     <ComboBox Name="ComboBoxSolvers" ItemsSource="{StaticResource mySolvers}" Text="Choose Solver" IsEditable="false" IsReadOnly="true" Margin="10 5 5 5" SelectedItem="StupidSolver"/>
                     <Button Name="ButtonBerechnen" Content="Berechnen" Margin="10 5 5 5" Click="ButtonBerechnen_Click"/>
                     <Label Content="Runtime [s]: " Margin="10 5 0 5"/>
@@ -29,7 +29,9 @@
                 </StackPanel>
             </StackPanel>
         </GroupBox>
-        <Canvas Name="CanvasGrid" ClipToBounds="True" Grid.Row="1"/>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas Name="CanvasGrid" Width="100" Height="100"/>
+        </ScrollViewer>
 
     </Grid>
 </Window>

@@ -64,7 +64,7 @@ namespace BwInf37Runde2Aufgabe2
         private static void PrepareDatastructures()
         {
             height = (NumberOfBricks + 2) / 2;
-            length = (NumberOfBricks * (NumberOfBricks - 1)) / 2;
+            length = (NumberOfBricks * (NumberOfBricks + 1)) / 2;
 
             //FreeJoints = new bool[length];
             CurrentJointPosition = new int[height];

@@ -35,6 +35,10 @@ namespace BwInf37Runde2Aufgabe2
                 return;
             }
 
+            Drawing drawing = new Drawing(this);
+            drawing.Draw();
+
+
             int index = ComboBoxSolvers.SelectedIndex;
             switch (index)
             {
@@ -50,8 +54,6 @@ namespace BwInf37Runde2Aufgabe2
                     MessageBox.Show("Please select a solver");
                     return;
             }
-
-
         }
     }
 }

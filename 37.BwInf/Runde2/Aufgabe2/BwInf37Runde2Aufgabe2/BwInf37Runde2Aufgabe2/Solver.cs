@@ -47,10 +47,8 @@ namespace BwInf37Runde2Aufgabe2
             Drawing drawing = new Drawing(mainWindow);
             drawing.Draw();
         }
-        protected bool CheckForValidSolution()
-        {
-            return false;
-        }
+
+
         public void Solve()
         {
             StartStopwatch();
@@ -70,10 +68,19 @@ namespace BwInf37Runde2Aufgabe2
             MessageBox.Show("No solution could be found");
         }
         abstract protected void Backtracking(int JointNumber);
+
+        protected bool CheckForInvalidRow()
+        {
+            return false;
+        }
+        protected bool CheckForValidSolution()
+        {
+            return false;
+        }
     }
 
     /// <summary>
-    /// 
+    /// Randomized Depth-First-Search without pruning
     /// </summary>
     class StupidSolver : Solver
     {

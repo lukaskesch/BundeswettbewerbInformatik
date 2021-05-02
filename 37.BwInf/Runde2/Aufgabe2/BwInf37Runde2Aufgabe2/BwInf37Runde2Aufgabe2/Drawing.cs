@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace BwInf37Runde2Aufgabe2
 {
@@ -15,38 +17,25 @@ namespace BwInf37Runde2Aufgabe2
         private MainWindow mainWindow;
         private Canvas canvas;
 
+        private const int BrickSize = 35;
         private const int CanvasGridMargin = 20;
-        private double DX, DY;
-        private double X0, Y0;
-        private double MinX, MaxX, MinY, MaxY;
 
         public Drawing(MainWindow AMainWindow)
         {
             mainWindow = AMainWindow;
             canvas = mainWindow.CanvasGrid;
-
         }
         public void Draw()
         {
             mainWindow.CanvasGrid.Children.Clear();
-            SetParameters();
-            SetScale();
+            SetCanvasScale();
+            Warten(canvas);
             DrawAllBricks();
         }
-        private void SetParameters()
+        private void SetCanvasScale()
         {
-            MinX = 0;
-            MaxX = Data.length;
-            MinY = 0;
-            MaxY = Data.height;
-        }
-        private void SetScale()
-        {
-            //Diese Methode berechnet Werte, die für die Umrechnung des mathematischen Koordinatensystems in das Koordinatensystems des Canvas benötigt werden
-            DX = (canvas.ActualWidth - 2 * CanvasGridMargin) / (MaxX - MinX);
-            X0 = CanvasGridMargin - DX * MinX;
-            DY = (canvas.ActualHeight - 2 * CanvasGridMargin) / (MinY - MaxY);
-            Y0 = CanvasGridMargin - DY * MaxY;
+            canvas.Width = Data.length * BrickSize + 2 * CanvasGridMargin;
+            canvas.Height = Data.height * BrickSize + 2 * CanvasGridMargin;
         }
         private void DrawAllBricks()
         {
@@ -54,35 +43,54 @@ namespace BwInf37Runde2Aufgabe2
             DrawRectangle(new Point(1, 0), 2);
             DrawRectangle(new Point(3, 0), 3);
             DrawRectangle(new Point(6, 0), 4);
+            DrawRectangle(new Point(10, 0), 5);
+            DrawRectangle(new Point(15, 0), 6);
 
             DrawRectangle(new Point(1, 1), 2);
             DrawRectangle(new Point(1, 2), 2);
             DrawRectangle(new Point(1, 3), 2);
-            DrawRectangle(new Point(1, 4), 2);
-            DrawRectangle(new Point(1, 5), 2);
         }
         private void DrawRectangle(Point LeftDownCorner, int lenght)
         {
-            LeftDownCorner = PlotToCanvas(LeftDownCorner);
-
             Rectangle rectangle = new Rectangle();
-            rectangle.Width = lenght * DX;
-            rectangle.Height = -DY;
-
-            Canvas.SetLeft(rectangle, LeftDownCorner.X);
-            Canvas.SetTop(rectangle, LeftDownCorner.Y + DY);
+            rectangle.Width = lenght * BrickSize;
+            rectangle.Height = BrickSize;
             rectangle.Stroke = Brushes.Black;
             rectangle.StrokeThickness = 2;
             rectangle.Fill = Brushes.White;
 
+            LeftDownCorner = PlotToCanvas(LeftDownCorner);
+            Canvas.SetLeft(rectangle, LeftDownCorner.X);
+            Canvas.SetTop(rectangle, LeftDownCorner.Y);
+
             canvas.Children.Add(rectangle);
+
+            DrawNumber(LeftDownCorner, lenght);
         }
-        
+        private void DrawNumber(Point LeftDownCorner, int lenght)
+        {
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = lenght.ToString();
+            textBlock.FontSize = 25;
+
+            Canvas.SetLeft(textBlock, LeftDownCorner.X + 10);
+            Canvas.SetTop(textBlock, LeftDownCorner.Y + 0);
+
+            canvas.Children.Add(textBlock);
+        }
         private Point PlotToCanvas(Point P)
         {
-            //Diese Methode rechnet die mathematischen Koordinaten in die Koordinaten auf dem Canvas um
-            return new Point(DX * P.X + X0, DY * P.Y + Y0);
+            return new Point(P.X * BrickSize + CanvasGridMargin, (Data.height - P.Y - 1) * BrickSize + CanvasGridMargin);
         }
+
+        private void Warten(Canvas canvas)
+        {
+            Action DummyAction = DoNothing;
+            Thread.Sleep(100);
+            canvas.Dispatcher.Invoke(DispatcherPriority.Input, DummyAction);
+        }
+
+        private void DoNothing() { }
 
     }
 }
