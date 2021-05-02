@@ -34,21 +34,33 @@ namespace BwInf37Runde2Aufgabe2
         }
         private void SetCanvasScale()
         {
-            canvas.Width = Data.length * BrickSize + 2 * CanvasGridMargin;
+            if (Data.OddNumberOfBricks)
+                canvas.Width = (Data.length + Data.NumberOfBricks + 1) * BrickSize + 2 * CanvasGridMargin;
+            else
+                canvas.Width = Data.length * BrickSize + 2 * CanvasGridMargin;
+
             canvas.Height = Data.height * BrickSize + 2 * CanvasGridMargin;
         }
         private void DrawAllBricks()
         {
-            DrawRectangle(new Point(0, 0), 1);
-            DrawRectangle(new Point(1, 0), 2);
-            DrawRectangle(new Point(3, 0), 3);
-            DrawRectangle(new Point(6, 0), 4);
-            DrawRectangle(new Point(10, 0), 5);
-            DrawRectangle(new Point(15, 0), 6);
+            int BrickLength, SlotNumber;
+            for (int i = 0; i < Data.height; i++)
+            {
+                SlotNumber = 0;
+                for (int j = 0; j < Data.NumberOfBricks; j++)
+                {
+                    if (j == 2 && Data.OddNumberOfBricks)
+                    {
+                        BrickLength = Data.NumberOfBricks + 1;
+                        DrawRectangle(new Point(SlotNumber, i), BrickLength);
+                        SlotNumber += BrickLength;
+                    }
 
-            DrawRectangle(new Point(1, 1), 2);
-            DrawRectangle(new Point(1, 2), 2);
-            DrawRectangle(new Point(1, 3), 2);
+                    BrickLength = Data.Bricks[i, j];
+                    DrawRectangle(new Point(SlotNumber, i), BrickLength);
+                    SlotNumber += BrickLength;
+                }
+            }
         }
         private void DrawRectangle(Point LeftDownCorner, int lenght)
         {

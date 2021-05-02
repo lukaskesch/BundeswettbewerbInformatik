@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BwInf37Runde2Aufgabe2"
         mc:Ignorable="d"
-        Title="BwInf Aufgabe" Height="450" Width="800">
+        Title="Bob der Baumeister entwirft Mauern" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -14,7 +14,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="Input" Grid.Row="0" Margin="5 0 5 5">
+        <GroupBox Header="Controls" Grid.Row="0" Margin="5 0 5 5">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <StackPanel.Resources>

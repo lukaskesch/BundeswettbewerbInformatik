@@ -10,14 +10,14 @@ using System.Windows;
 namespace BwInf37Runde2Aufgabe2
 {
     /// <summary>
-    /// 
+    /// Stores lists of all solvers
     /// </summary>
     public class Solvers : ObservableCollection<string>
     {
         public Solvers()
         {
             Add("StupidSolver");
-            Add("NormalSolver");
+            Add("AverageSolver");
             Add("SophisticatedSolver");
         }
     }
@@ -42,7 +42,7 @@ namespace BwInf37Runde2Aufgabe2
             double ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
             mainWindow.LabelElapsedTime.Content = ElapsedSeconds.ToString();
         }
-        protected void ShowResult()
+        protected void PrintResult()
         {
             Drawing drawing = new Drawing(mainWindow);
             drawing.Draw();
@@ -60,7 +60,7 @@ namespace BwInf37Runde2Aufgabe2
             catch (Exception)
             {
                 StopStopwatchAndPrintElapsedTime();
-                ShowResult();
+                PrintResult();
                 return;
             }
 
@@ -140,11 +140,11 @@ namespace BwInf37Runde2Aufgabe2
     }
 
     /// <summary>
-    /// 
+    /// Randomized Depth-First-Search with pruning l1 (continously checking for invalid rows)
     /// </summary>
-    class NormalSolver : Solver
+    class AverageSolver : Solver
     {
-        public NormalSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
         protected override void Backtracking(int JointNumber)
         {
@@ -152,7 +152,7 @@ namespace BwInf37Runde2Aufgabe2
     }
 
     /// <summary>
-    /// 
+    /// Randomized Depth-First-Search with pruning l2 (symetry)
     /// </summary>
     class SophisticatedSolver : Solver
     {

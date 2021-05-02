@@ -44,7 +44,7 @@ namespace BwInf37Runde2Aufgabe2
                 return false;
             }
 
-            bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 40);
+            bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 120);
             if (OutOfBounds)
             {
                 return false;

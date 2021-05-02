@@ -28,16 +28,12 @@ namespace BwInf37Runde2Aufgabe2
 
         private void ButtonBerechnen_Click(object sender, RoutedEventArgs e)
         {
-            bool rightInput = Data.ReadInput(TextBoxInput.Text);
-            if (!rightInput)
+            bool ValidInput = Data.ReadInput(TextBoxInput.Text);
+            if (!ValidInput)
             {
-                MessageBox.Show("Please enter an integer between 3 and 40", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Please enter an integer between 3 and 120", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            Drawing drawing = new Drawing(this);
-            drawing.Draw();
-
 
             int index = ComboBoxSolvers.SelectedIndex;
             switch (index)
@@ -47,11 +43,15 @@ namespace BwInf37Runde2Aufgabe2
                     stupidSolver.Solve();
                     return;
                 case 1:
-                    NormalSolver normalSolver = new NormalSolver(this);
+                    AverageSolver normalSolver = new AverageSolver(this);
                     normalSolver.Solve();
                     break;
+                case 2:
+                    SophisticatedSolver sophisticatedSolver = new SophisticatedSolver(this);
+                    sophisticatedSolver.Solve();
+                    break;
                 default:
-                    MessageBox.Show("Please select a solver");
+                    MessageBox.Show("Please select a solver", "Action required", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
             }
         }
