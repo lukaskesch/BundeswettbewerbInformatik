@@ -35,9 +35,23 @@ namespace BwInf37Runde2Aufgabe2
                 return;
             }
 
-            HorizontalJointSolverStupid horizontalSolver = new HorizontalJointSolverStupid(this);
-            VerticalSolver verticalSolver = new VerticalSolver(this);
-            horizontalSolver.Solve();
+            int index = ComboBoxSolvers.SelectedIndex;
+            switch (index)
+            {
+                case 0:
+                    StupidSolver stupidSolver = new StupidSolver(this);
+                    stupidSolver.Solve();
+                    return;
+                case 1:
+                    NormalSolver normalSolver = new NormalSolver(this);
+                    normalSolver.Solve();
+                    break;
+                default:
+                    MessageBox.Show("Please select a solver");
+                    return;
+            }
+
+
         }
     }
 }

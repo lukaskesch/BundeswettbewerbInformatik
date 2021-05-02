@@ -13,16 +13,16 @@ namespace BwInf37Runde2Aufgabe2
         public static int height;
         public static int length;
 
-        /// <summary>
-        /// Stores if the ith joint is free
-        /// </summary>
-        public static bool[] FreeJoints;
+        ///// <summary>
+        ///// Stores if the ith joint is free
+        ///// </summary>
+        //public static bool[] FreeJoints;
 
         /// <summary>
         /// Stores the width of the brick in the ith row in the jth slot
         /// </summary>
         public static int[,] Bricks;
-       
+
         /// <summary>
         /// Stores if a brick of length j is used in the ith row
         /// </summary>
@@ -45,14 +45,14 @@ namespace BwInf37Runde2Aufgabe2
             }
 
             bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 40);
-            if(OutOfBounds)
+            if (OutOfBounds)
             {
                 return false;
             }
 
 
             OddNumberOfBricks = NumberOfBricks % 2 != 0;
-            if(OddNumberOfBricks)
+            if (OddNumberOfBricks)
             {
                 NumberOfBricks--;
             }
@@ -66,7 +66,7 @@ namespace BwInf37Runde2Aufgabe2
             height = (NumberOfBricks + 2) / 2;
             length = (NumberOfBricks * (NumberOfBricks - 1)) / 2;
 
-            FreeJoints = new bool[length];
+            //FreeJoints = new bool[length];
             CurrentJointPosition = new int[height];
             Bricks = new int[height, NumberOfBricks];
             UsedBricks = new bool[height, NumberOfBricks];

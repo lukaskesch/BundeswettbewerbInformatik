@@ -51,3 +51,4 @@ C:\Users\Lukas\Documents\GitHub\BundeswettbewerbInformatik\37.BwInf\Runde2\Aufga
 C:\Users\Lukas\Documents\GitHub\BundeswettbewerbInformatik\37.BwInf\Runde2\Aufgabe2\BwInf37Runde2Aufgabe2\BwInf37Runde2Aufgabe2\obj\Debug\BwInf37Runde2Aufgabe2.csproj.CoreCompileInputs.cache
 C:\Users\Lukas\Documents\GitHub\BundeswettbewerbInformatik\37.BwInf\Runde2\Aufgabe2\BwInf37Runde2Aufgabe2\BwInf37Runde2Aufgabe2\obj\Debug\BwInf37Runde2Aufgabe2.exe.manifest
 C:\Users\Lukas\Documents\GitHub\BundeswettbewerbInformatik\37.BwInf\Runde2\Aufgabe2\BwInf37Runde2Aufgabe2\BwInf37Runde2Aufgabe2\obj\Debug\BwInf37Runde2Aufgabe2.application
+C:\Users\Lukas\Documents\GitHub\BundeswettbewerbInformatik\37.BwInf\Runde2\Aufgabe2\BwInf37Runde2Aufgabe2\BwInf37Runde2Aufgabe2\obj\Debug\GeneratedInternalTypeHelper.g.cs

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,19 @@ using System.Windows;
 
 namespace BwInf37Runde2Aufgabe2
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Solvers : ObservableCollection<string>
+    {
+        public Solvers()
+        {
+            Add("StupidSolver");
+            Add("NormalSolver");
+            Add("SophisticatedSolver");
+        }
+    }
+
     abstract class Solver
     {
         protected MainWindow mainWindow;
@@ -20,7 +34,7 @@ namespace BwInf37Runde2Aufgabe2
 
         protected void StartStopwatch()
         {
-            stopwatch.Start();
+            stopwatch.Restart();
         }
         protected void StopStopwatchAndPrintElapsedTime()
         {
@@ -33,40 +47,47 @@ namespace BwInf37Runde2Aufgabe2
             Drawing drawing = new Drawing(mainWindow);
             drawing.Draw();
         }
-    }
-
-    class HorizontalJointSolverStupid : Solver
-    {
-        public HorizontalJointSolverStupid(MainWindow AMainWindow) : base(AMainWindow)
+        protected bool CheckForValidSolution()
         {
-
+            return false;
         }
-
         public void Solve()
         {
             StartStopwatch();
 
-            MessageBox.Show("Test");
             try
             {
-                throw new FoundSolutionExeptions();
+                Backtracking(0);
             }
             catch (Exception)
             {
-                MessageBox.Show("Test");
-                throw;
+                StopStopwatchAndPrintElapsedTime();
+                ShowResult();
+                return;
             }
 
             StopStopwatchAndPrintElapsedTime();
-            ShowResult();
+            MessageBox.Show("No solution could be found");
         }
+        abstract protected void Backtracking(int JointNumber);
+    }
 
-        private bool Backtracking(int JointNumber)
+    /// <summary>
+    /// 
+    /// </summary>
+    class StupidSolver : Solver
+    {
+        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+
+        protected override void Backtracking(int JointNumber)
         {
+            MessageBox.Show("test45");
+            return;
+
             //Check if end is reached and if so if a valid solution has been found
             if (JointNumber >= Data.length && CheckForValidSolution())
             {
-                return true;
+                throw new FoundSolutionExeptions();
             }
 
             for (int height = 0; height < Data.height; height++)
@@ -74,7 +95,7 @@ namespace BwInf37Runde2Aufgabe2
                 int BrickLength = GetNextUnusedBrick(height);
                 if (!CheckIfBrickIsValid(height, BrickLength))
                 {
-                    return false;
+                    return;
                 }
 
                 //Add brick
@@ -84,13 +105,10 @@ namespace BwInf37Runde2Aufgabe2
                 Data.CurrentJointPosition[height] = JointIndex;
             }
 
-            return false;
+            return;
         }
 
-        private bool CheckForValidSolution()
-        {
-            return false;
-        }
+
         private int GetNextUnusedBrick(int height)
         {
             for (int i = 0; i < Data.NumberOfBricks; i++)
@@ -105,13 +123,7 @@ namespace BwInf37Runde2Aufgabe2
         }
         private bool CheckIfBrickIsValid(int height, int BrickLength)
         {
-            int JointIndex = Data.CurrentJointPosition[height] + BrickLength;
-
-            if (Data.FreeJoints[JointIndex])
-            {
-                return false;
-            }
-            return true;
+            return false;
         }
         private bool Pruning()
         {
@@ -120,11 +132,27 @@ namespace BwInf37Runde2Aufgabe2
 
     }
 
-    class VerticalSolver : Solver
+    /// <summary>
+    /// 
+    /// </summary>
+    class NormalSolver : Solver
     {
-        public VerticalSolver(MainWindow AMainWindow) : base(AMainWindow)
-        {
+        public NormalSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
+        protected override void Backtracking(int JointNumber)
+        {
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    class SophisticatedSolver : Solver
+    {
+        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+
+        protected override void Backtracking(int JointNumber)
+        {
         }
     }
 }
