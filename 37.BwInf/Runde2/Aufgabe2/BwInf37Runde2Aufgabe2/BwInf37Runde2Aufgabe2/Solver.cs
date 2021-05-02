@@ -13,11 +13,11 @@ namespace BwInf37Runde2Aufgabe2
         protected MainWindow mainWindow;
         private Stopwatch stopwatch = new Stopwatch();
 
-        public Solver (MainWindow AMainWindow)
+        public Solver(MainWindow AMainWindow)
         {
             mainWindow = AMainWindow;
         }
-        
+
         protected void StartStopwatch()
         {
             stopwatch.Start();
@@ -26,7 +26,7 @@ namespace BwInf37Runde2Aufgabe2
         {
             stopwatch.Stop();
             double ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
-            mainWindow.LabelElapsedTime.Content = ElapsedSeconds.ToString() ;
+            mainWindow.LabelElapsedTime.Content = ElapsedSeconds.ToString();
         }
         protected void ShowResult()
         {
@@ -35,11 +35,11 @@ namespace BwInf37Runde2Aufgabe2
         }
     }
 
-    class HorizontalBrickSolver : Solver
+    class HorizontalJointSolverStupid : Solver
     {
-        public HorizontalBrickSolver (MainWindow AMainWindow) : base (AMainWindow)
+        public HorizontalJointSolverStupid(MainWindow AMainWindow) : base(AMainWindow)
         {
-            
+
         }
 
         public void Solve()
@@ -47,15 +47,24 @@ namespace BwInf37Runde2Aufgabe2
             StartStopwatch();
 
             MessageBox.Show("Test");
+            try
+            {
+                throw new FoundSolutionExeptions();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Test");
+                throw;
+            }
 
             StopStopwatchAndPrintElapsedTime();
             ShowResult();
         }
 
-        private bool Backtracking(int BrickNumber)
+        private bool Backtracking(int JointNumber)
         {
             //Check if end is reached and if so if a valid solution has been found
-            if(BrickNumber >= Data.NumberOfBricks && CheckForValidSolution())
+            if (JointNumber >= Data.length && CheckForValidSolution())
             {
                 return true;
             }
@@ -69,7 +78,7 @@ namespace BwInf37Runde2Aufgabe2
                 }
 
                 //Add brick
-                Data.Bricks[height, BrickNumber] = BrickLength;
+                Data.Bricks[height, JointNumber] = BrickLength;
                 Data.UsedBricks[height, BrickLength] = true;
                 int JointIndex = Data.CurrentJointPosition[height] + BrickLength;
                 Data.CurrentJointPosition[height] = JointIndex;

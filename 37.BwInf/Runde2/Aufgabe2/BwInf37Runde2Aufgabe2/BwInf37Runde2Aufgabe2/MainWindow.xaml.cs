@@ -20,7 +20,7 @@ namespace BwInf37Runde2Aufgabe2
     /// </summary>
     public partial class MainWindow : Window
     {
-       
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,7 +35,7 @@ namespace BwInf37Runde2Aufgabe2
                 return;
             }
 
-            HorizontalBrickSolver horizontalSolver = new HorizontalBrickSolver(this);
+            HorizontalJointSolverStupid horizontalSolver = new HorizontalJointSolverStupid(this);
             VerticalSolver verticalSolver = new VerticalSolver(this);
             horizontalSolver.Solve();
         }
