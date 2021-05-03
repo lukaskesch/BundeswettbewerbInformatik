@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="BwInf37Runde2Aufgabe2.exe" size="16832">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="BwInf37Runde2Aufgabe2.exe" size="18880">
       <assemblyIdentity name="BwInf37Runde2Aufgabe2" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>zKjXK9NJN9GfxxrXoZYsfQ5g7kdCF550mDLN8farCnY=</dsig:DigestValue>
+        <dsig:DigestValue>RLdlEgzrdb11L6J1pu1ajotRJRIEyymNmKH46pYF+7I=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

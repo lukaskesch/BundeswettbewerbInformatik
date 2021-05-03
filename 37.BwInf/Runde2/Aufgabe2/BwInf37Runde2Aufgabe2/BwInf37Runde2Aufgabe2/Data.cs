@@ -24,7 +24,7 @@ namespace BwInf37Runde2Aufgabe2
         public static int[,] Bricks;
 
         /// <summary>
-        /// Stores if a brick of length j is used in the ith row
+        /// Stores if a brick of length j+1 is used in the ith row
         /// </summary>
         public static bool[,] UsedBricks;
 
@@ -32,6 +32,11 @@ namespace BwInf37Runde2Aufgabe2
         /// Stores the current Joint position in the ith row
         /// </summary>
         public static int[] CurrentJointPosition;
+
+        /// <summary>
+        /// Stores the number of bricks in the ith row
+        /// </summary>
+        public static int[] NumberOfBricksInGivenRow;
 
         public static bool ReadInput(string input)
         {
@@ -68,6 +73,7 @@ namespace BwInf37Runde2Aufgabe2
 
             //FreeJoints = new bool[length];
             CurrentJointPosition = new int[height];
+            NumberOfBricksInGivenRow = new int[height];
             Bricks = new int[height, NumberOfBricks];
             UsedBricks = new bool[height, NumberOfBricks];
         }

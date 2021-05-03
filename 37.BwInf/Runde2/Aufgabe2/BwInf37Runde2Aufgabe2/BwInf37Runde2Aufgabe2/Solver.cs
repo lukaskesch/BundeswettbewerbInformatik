@@ -55,86 +55,139 @@ namespace BwInf37Runde2Aufgabe2
 
             try
             {
-                Backtracking(0);
+                SetBeginningBricks();
+                Backtracking(Data.height + 1);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 StopStopwatchAndPrintElapsedTime();
                 PrintResult();
+                //MessageBox.Show(e.Message);
                 return;
             }
 
             StopStopwatchAndPrintElapsedTime();
             MessageBox.Show("No solution could be found");
         }
-        abstract protected void Backtracking(int JointNumber);
 
+        /// <summary>
+        /// O(n) - Sets Data.height many bricks. Their width ranges from 1 to Data.height. Every brick is set in a new row
+        /// </summary>
+        private void SetBeginningBricks()
+        {
+            int JointPosition;
+            for (int height = 0; height < Data.height; height++)
+            {
+                JointPosition = height + 1;
+                Data.CurrentJointPosition[height] = JointPosition;
+                Data.UsedBricks[height, height] = true;
+                Data.Bricks[height, 0] = JointPosition;
+                Data.NumberOfBricksInGivenRow[height] = 1;
+            }
+        }
+        abstract protected void Backtracking(int jointNumber);
+
+        /// <summary>
+        /// O(n) - Returns a list of valid Bricks to set. The first value is the rowIndex and the second number is the brickLength 
+        /// </summary>
+        /// <param name="recursionJointPosition"></param>
+        /// <returns></returns>
+        protected List<Tuple<int, int>> GetNextValidBricks(int recursionJointPosition)
+        {
+            int currentRowJointPosition, neededBrickLength;
+            List<Tuple<int, int>> ValidBricks = new List<Tuple<int, int>>();
+
+            for (int height = 0; height < Data.height; height++)
+            {
+                currentRowJointPosition = Data.CurrentJointPosition[height];
+                neededBrickLength = recursionJointPosition - currentRowJointPosition;
+
+                bool isBrickAvailabe = neededBrickLength <= Data.NumberOfBricks;
+                if (isBrickAvailabe)
+                {
+                    bool isBrickUnUsed = !Data.UsedBricks[height, neededBrickLength - 1];
+                    if (isBrickUnUsed)
+                    {
+                        ValidBricks.Add(new Tuple<int, int>(height, neededBrickLength));
+                    }
+                }
+            }
+
+            return ValidBricks;
+        }
+        protected void AddBrickToWall(Tuple<int, int> tuple, int recursionJointPosition)
+        {
+            int height = tuple.Item1;
+            int length = tuple.Item2;
+            int numberOfBricksInRow = Data.NumberOfBricksInGivenRow[height];
+            Data.Bricks[height, numberOfBricksInRow] = length;
+            Data.UsedBricks[height, length - 1] = true;
+            Data.CurrentJointPosition[height] = recursionJointPosition;
+            Data.NumberOfBricksInGivenRow[height]++;
+        }
+        protected void RemoveBrickFromWall(Tuple<int, int> tuple, int recursionJointPosition)
+        {
+            int height = tuple.Item1;
+            int length = tuple.Item2;
+            int numberOfBricksInRow = --Data.NumberOfBricksInGivenRow[height];
+            Data.Bricks[height, numberOfBricksInRow] = 0;
+            Data.UsedBricks[height, length - 1] = false;
+            Data.CurrentJointPosition[height] = recursionJointPosition - length;
+        }
         protected bool CheckForInvalidRow()
         {
             return false;
         }
         protected bool CheckForValidSolution()
         {
-            return false;
+            for (int height = 0; height < Data.height; height++)
+            {
+                bool isUncloseableGap = (Data.length - Data.CurrentJointPosition[height]) > Data.NumberOfBricks;
+                if (isUncloseableGap)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        protected void InsertMissingPieces()
+        {
+            for (int height = 0; height < Data.height; height++)
+            {
+                int brickLength = Data.length - Data.CurrentJointPosition[height];
+                if (brickLength > 0)
+                    Data.Bricks[height, Data.NumberOfBricks - 1] = brickLength;
+            }
         }
     }
 
     /// <summary>
-    /// Randomized Depth-First-Search without pruning
+    /// Normal Depth-First-Search without pruning
     /// </summary>
     class StupidSolver : Solver
     {
         public StupidSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
-        protected override void Backtracking(int JointNumber)
+        protected override void Backtracking(int recursionJointPosition)
         {
-            MessageBox.Show("test45");
-            return;
-
             //Check if end is reached and if so if a valid solution has been found
-            if (JointNumber >= Data.length && CheckForValidSolution())
+            if (recursionJointPosition > Data.length && CheckForValidSolution())
             {
+                InsertMissingPieces();
                 throw new FoundSolutionExeptions();
             }
 
-            for (int height = 0; height < Data.height; height++)
+            List<Tuple<int, int>> ValidBricks = GetNextValidBricks(recursionJointPosition);
+            //ValidBricks.Shuffle();
+
+            foreach (Tuple<int, int> tuple in ValidBricks)
             {
-                int BrickLength = GetNextUnusedBrick(height);
-                if (!CheckIfBrickIsValid(height, BrickLength))
-                {
-                    return;
-                }
+                AddBrickToWall(tuple, recursionJointPosition);
 
-                //Add brick
-                Data.Bricks[height, JointNumber] = BrickLength;
-                Data.UsedBricks[height, BrickLength] = true;
-                int JointIndex = Data.CurrentJointPosition[height] + BrickLength;
-                Data.CurrentJointPosition[height] = JointIndex;
+                Backtracking(recursionJointPosition + 1);
+
+                RemoveBrickFromWall(tuple, recursionJointPosition);
             }
-
-            return;
-        }
-
-
-        private int GetNextUnusedBrick(int height)
-        {
-            for (int i = 0; i < Data.NumberOfBricks; i++)
-            {
-                bool BrickUsed = Data.UsedBricks[height, i];
-                if (!BrickUsed)
-                {
-                    return i;
-                }
-            }
-            return 0;
-        }
-        private bool CheckIfBrickIsValid(int height, int BrickLength)
-        {
-            return false;
-        }
-        private bool Pruning()
-        {
-            return true;
         }
 
     }

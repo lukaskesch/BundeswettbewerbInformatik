@@ -84,7 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Drawing.cs" />
-    <Compile Include="Exeptions.cs" />
+    <Compile Include="AddOns.cs" />
     <Compile Include="Solver.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
