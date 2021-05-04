@@ -76,6 +76,7 @@ namespace BwInf37Runde2Aufgabe2
             NumberOfBricksInGivenRow = new int[height];
             Bricks = new int[height, NumberOfBricks];
             UsedBricks = new bool[height, NumberOfBricks];
+
         }
 
     }

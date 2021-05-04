@@ -25,6 +25,7 @@ namespace BwInf37Runde2Aufgabe2
     abstract class Solver
     {
         protected MainWindow mainWindow;
+        protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
 
         public Solver(MainWindow AMainWindow)
@@ -51,6 +52,7 @@ namespace BwInf37Runde2Aufgabe2
 
         public void Solve()
         {
+            statistics = new Statistics(Data.length);
             StartStopwatch();
 
             try
@@ -62,6 +64,7 @@ namespace BwInf37Runde2Aufgabe2
             {
                 StopStopwatchAndPrintElapsedTime();
                 PrintResult();
+                statistics.PrintStatistics();
                 //MessageBox.Show(e.Message);
                 return;
             }
@@ -117,6 +120,8 @@ namespace BwInf37Runde2Aufgabe2
         }
         protected void AddBrickToWall(Tuple<int, int> tuple, int recursionJointPosition)
         {
+            statistics.IncrementCounterForGivenRecursionDepth(recursionJointPosition);
+
             int height = tuple.Item1;
             int length = tuple.Item2;
             int numberOfBricksInRow = Data.NumberOfBricksInGivenRow[height];

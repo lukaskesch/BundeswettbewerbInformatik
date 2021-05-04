@@ -85,6 +85,7 @@
     </ApplicationDefinition>
     <Compile Include="Drawing.cs" />
     <Compile Include="AddOns.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="Solver.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
