@@ -21,16 +21,22 @@ namespace BwInf37Runde2Aufgabe2
             Add("SophisticatedSolver");
         }
     }
+    enum KindOfSolver
+    {
+        StupidSolver, AverageSolver, SophisticatedSolver
+    }
 
     abstract class Solver
     {
+        protected KindOfSolver kindOfSolver;
         protected MainWindow mainWindow;
         protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
 
-        public Solver(MainWindow AMainWindow)
+        public Solver(MainWindow AMainWindow, KindOfSolver AKindOfSolver)
         {
             mainWindow = AMainWindow;
+            kindOfSolver = AKindOfSolver;
         }
 
         protected void StartStopwatch()
@@ -64,7 +70,7 @@ namespace BwInf37Runde2Aufgabe2
             {
                 StopStopwatchAndPrintElapsedTime();
                 PrintResult();
-                statistics.PrintStatistics();
+                statistics.SaveStatistics(kindOfSolver);
                 //MessageBox.Show(e.Message);
                 return;
             }
@@ -171,7 +177,7 @@ namespace BwInf37Runde2Aufgabe2
     /// </summary>
     class StupidSolver : Solver
     {
-        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.StupidSolver) { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
@@ -202,7 +208,7 @@ namespace BwInf37Runde2Aufgabe2
     /// </summary>
     class AverageSolver : Solver
     {
-        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.AverageSolver) { }
 
         protected override void Backtracking(int JointNumber)
         {
@@ -214,7 +220,7 @@ namespace BwInf37Runde2Aufgabe2
     /// </summary>
     class SophisticatedSolver : Solver
     {
-        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.SophisticatedSolver) { }
 
         protected override void Backtracking(int JointNumber)
         {
