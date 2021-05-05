@@ -32,6 +32,7 @@ namespace BwInf37Runde2Aufgabe2
         protected MainWindow mainWindow;
         protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
+        private string ElapsedTime;
 
         public Solver(MainWindow AMainWindow, KindOfSolver AKindOfSolver)
         {
@@ -47,7 +48,8 @@ namespace BwInf37Runde2Aufgabe2
         {
             stopwatch.Stop();
             double ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
-            mainWindow.LabelElapsedTime.Content = ElapsedSeconds.ToString();
+            ElapsedTime = ElapsedSeconds.ToString();
+            mainWindow.LabelElapsedTime.Content = ElapsedTime;
         }
         protected void PrintResult()
         {
@@ -70,7 +72,7 @@ namespace BwInf37Runde2Aufgabe2
             {
                 StopStopwatchAndPrintElapsedTime();
                 PrintResult();
-                statistics.SaveStatistics(kindOfSolver);
+                statistics.SaveStatistics(kindOfSolver, ElapsedTime);
                 //MessageBox.Show(e.Message);
                 return;
             }
@@ -170,6 +172,39 @@ namespace BwInf37Runde2Aufgabe2
                     Data.Bricks[height, Data.NumberOfBricks - 1] = brickLength;
             }
         }
+        /// <summary>
+        /// O(n^2) - 
+        /// </summary>
+        /// <param name="recursionJointPosition"></param>
+        /// <returns></returns>
+        protected bool CanContinuePruning(int recursionJointPosition)
+        {
+            int currentRowJointPosition, neededBrickLength;
+
+            for (int height = 0; height < Data.height; height++)
+            {
+                currentRowJointPosition = Data.CurrentJointPosition[height];
+                neededBrickLength = recursionJointPosition - currentRowJointPosition;
+
+                bool isBrickAvailabe = false;
+
+                for (int brickLength = neededBrickLength; brickLength <= Data.NumberOfBricks; brickLength++)
+                {
+                    bool isThisBrickAvailabe = !Data.UsedBricks[height, brickLength - 1];
+                    if (isThisBrickAvailabe)
+                    {
+                        isBrickAvailabe = true;
+                        break;
+                    }
+                }
+
+                if (!isBrickAvailabe)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     /// <summary>
@@ -210,8 +245,31 @@ namespace BwInf37Runde2Aufgabe2
     {
         public AverageSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.AverageSolver) { }
 
-        protected override void Backtracking(int JointNumber)
+        protected override void Backtracking(int recursionJointPosition)
         {
+
+
+            //Check if end is reached and if so if a valid solution has been found
+            if (recursionJointPosition > Data.length && CheckForValidSolution())
+            {
+                InsertMissingPieces();
+                throw new FoundSolutionExeptions();
+            }
+            if (!CanContinuePruning(recursionJointPosition))
+            {
+                return;
+            }
+            List<Tuple<int, int>> ValidBricks = GetNextValidBricks(recursionJointPosition);
+            //ValidBricks.Shuffle();
+
+            foreach (Tuple<int, int> tuple in ValidBricks)
+            {
+                AddBrickToWall(tuple, recursionJointPosition);
+
+                Backtracking(recursionJointPosition + 1);
+
+                RemoveBrickFromWall(tuple, recursionJointPosition);
+            }
         }
     }
 

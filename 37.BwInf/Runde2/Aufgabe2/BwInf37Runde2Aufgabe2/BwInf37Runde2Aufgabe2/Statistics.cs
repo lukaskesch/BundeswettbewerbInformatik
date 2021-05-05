@@ -21,16 +21,16 @@ namespace BwInf37Runde2Aufgabe2
             numberOfCallsForGivenRecursionDepth[depth]++;
         }
 
-        public void SaveStatistics(KindOfSolver kindOfSolver)
+        public void SaveStatistics(KindOfSolver kindOfSolver, string ElapsedTime)
         {
-            string content = GetStatisticsString(kindOfSolver);
+            string content = GetStatisticsString(kindOfSolver, ElapsedTime);
             SaveFile(content, kindOfSolver);
         }
-        private string GetStatisticsString(KindOfSolver kindOfSolver)
+        private string GetStatisticsString(KindOfSolver kindOfSolver, string ElapsedTime)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            string overview = string.Format("Statistics file for {0} with n = {1}. Created at {2}.", kindOfSolver, Data.NumberOfBricks, DateTime.Now);
+            string overview = string.Format("Statistics file for {0} with n = {1}. Runtime of {2} s. Created at {3}.", kindOfSolver, Data.NumberOfBricks, ElapsedTime, DateTime.Now);
             stringBuilder.Append(overview);
 
             for (int i = 0; i < numberOfCallsForGivenRecursionDepth.Length; i++)
