@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -101,7 +102,7 @@ namespace BwInf36Runde2Aufgabe1
         private void Warten(Canvas canvas)
         {
             Action DummyAction = DoNothing;
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
             canvas.Dispatcher.Invoke(DispatcherPriority.Input, DummyAction);
         }
 
@@ -109,7 +110,8 @@ namespace BwInf36Runde2Aufgabe1
 
         private void SaveImage()
         {
-            Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 60);
+            // Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 60);
+            Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 100);
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right,
               (int)rect.Bottom, 96d, 96d, System.Windows.Media.PixelFormats.Default);
             rtb.Render(canvas);
@@ -123,7 +125,9 @@ namespace BwInf36Runde2Aufgabe1
 
             pngEncoder.Save(ms);
             ms.Close();
-            System.IO.File.WriteAllBytes("logo.png", ms.ToArray());
+            Directory.CreateDirectory("Results");
+            string path = string.Format(@"Results\{0}.png", Data.NumberOfBricks.ToString());
+            System.IO.File.WriteAllBytes(path, ms.ToArray());
             Console.WriteLine("Done");
         }
     }

@@ -8,6 +8,7 @@ namespace BwInf36Runde2Aufgabe1
 {
     public static class Data
     {
+        public static KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
         public static bool OddNumberOfBricks;
         public static int NumberOfBricks;
         public static int height;

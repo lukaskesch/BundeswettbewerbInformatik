@@ -9,7 +9,6 @@ namespace BwInf36Runde2Aufgabe1
 {
     class Statistics
     {
-        public bool DrawStatistics;
         private long[] numberOfCallsForGivenRecursionDepth;
         public Statistics(int size)
         {
@@ -21,16 +20,16 @@ namespace BwInf36Runde2Aufgabe1
             numberOfCallsForGivenRecursionDepth[depth]++;
         }
 
-        public void SaveStatistics(KindOfSolver kindOfSolver, string ElapsedTime)
+        public void SaveStatistics(string ElapsedTime)
         {
-            string content = GetStatisticsString(kindOfSolver, ElapsedTime);
-            SaveFile(content, kindOfSolver);
+            string content = GetStatisticsString(ElapsedTime);
+            SaveFile(content);
         }
-        private string GetStatisticsString(KindOfSolver kindOfSolver, string ElapsedTime)
+        private string GetStatisticsString(string ElapsedTime)
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            string overview = string.Format("Statistics file for {0} with n = {1}. Runtime of {2} s. Created at {3}.", kindOfSolver, Data.NumberOfBricks, ElapsedTime, DateTime.Now);
+            string overview = string.Format("Statistics file for {0} with n = {1}. Runtime of {2} s. Created at {3}.", Data.kindOfSolver, Data.NumberOfBricks, ElapsedTime, DateTime.Now);
             stringBuilder.Append(overview);
 
             for (int i = 0; i < numberOfCallsForGivenRecursionDepth.Length; i++)
@@ -41,10 +40,10 @@ namespace BwInf36Runde2Aufgabe1
 
             return stringBuilder.ToString();
         }
-        private void SaveFile(string content, KindOfSolver kindOfSolver)
+        private void SaveFile(string content)
         {
             Directory.CreateDirectory("Statistics");
-            string title = string.Format(@"Statistics\{0}-{1}.csv", kindOfSolver, DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss"));
+            string title = string.Format(@"Statistics\{0}-{1}.csv", Data.kindOfSolver, DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss"));
 
             StreamWriter WriterStatistics = File.AppendText(title);
             try

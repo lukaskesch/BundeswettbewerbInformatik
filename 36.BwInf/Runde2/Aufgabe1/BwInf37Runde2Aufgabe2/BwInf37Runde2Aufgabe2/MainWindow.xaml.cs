@@ -39,14 +39,17 @@ namespace BwInf36Runde2Aufgabe1
             switch (index)
             {
                 case 0:
+                    Data.kindOfSolver = KindOfSolver.StupidSolver;
                     StupidSolver stupidSolver = new StupidSolver(this);
                     stupidSolver.Solve();
                     return;
                 case 1:
-                    AverageSolver normalSolver = new AverageSolver(this);
-                    normalSolver.Solve();
+                    Data.kindOfSolver = KindOfSolver.AverageSolver;
+                    AverageSolver averageSolver = new AverageSolver(this);
+                    averageSolver.Solve();
                     break;
                 case 2:
+                    Data.kindOfSolver = KindOfSolver.SophisticatedSolver;
                     SophisticatedSolver sophisticatedSolver = new SophisticatedSolver(this);
                     sophisticatedSolver.Solve();
                     break;

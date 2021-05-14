@@ -21,23 +21,21 @@ namespace BwInf36Runde2Aufgabe1
             Add("SophisticatedSolver");
         }
     }
-    enum KindOfSolver
+    public enum KindOfSolver
     {
         StupidSolver, AverageSolver, SophisticatedSolver
     }
 
     abstract class Solver
     {
-        protected KindOfSolver kindOfSolver;
         protected MainWindow mainWindow;
         protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
         private string ElapsedTime;
 
-        public Solver(MainWindow AMainWindow, KindOfSolver AKindOfSolver)
+        public Solver(MainWindow AMainWindow)
         {
             mainWindow = AMainWindow;
-            kindOfSolver = AKindOfSolver;
         }
 
         protected void StartStopwatch()
@@ -72,7 +70,7 @@ namespace BwInf36Runde2Aufgabe1
             {
                 StopStopwatchAndPrintElapsedTime();
                 PrintResult();
-                statistics.SaveStatistics(kindOfSolver, ElapsedTime);
+                statistics.SaveStatistics(ElapsedTime);
                 //MessageBox.Show(e.Message);
                 return;
             }
@@ -212,7 +210,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class StupidSolver : Solver
     {
-        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.StupidSolver) { }
+        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
@@ -243,12 +241,10 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class AverageSolver : Solver
     {
-        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.AverageSolver) { }
+        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
-
-
             //Check if end is reached and if so if a valid solution has been found
             if (recursionJointPosition > Data.length && CheckForValidSolution())
             {
@@ -278,7 +274,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class SophisticatedSolver : Solver
     {
-        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow, KindOfSolver.SophisticatedSolver) { }
+        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow) { }
 
         protected override void Backtracking(int JointNumber)
         {
