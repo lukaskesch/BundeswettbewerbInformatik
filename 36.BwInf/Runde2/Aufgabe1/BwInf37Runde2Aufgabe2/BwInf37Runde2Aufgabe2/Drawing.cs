@@ -16,16 +16,18 @@ namespace BwInf36Runde2Aufgabe1
 {
     public class Drawing
     {
+        private Data data;
         private MainWindow mainWindow;
         private Canvas canvas;
 
         private const int BrickSize = 35;
         private const int CanvasGridMargin = 20;
 
-        public Drawing(MainWindow AMainWindow)
+        public Drawing(MainWindow AMainWindow, Data AData)
         {
             mainWindow = AMainWindow;
             canvas = mainWindow.CanvasGrid;
+            data = AData;
         }
         public void Draw()
         {
@@ -38,29 +40,29 @@ namespace BwInf36Runde2Aufgabe1
         }
         private void SetCanvasScale()
         {
-            if (Data.OddNumberOfBricks)
-                canvas.Width = (Data.length + Data.NumberOfBricks + 1) * BrickSize + 2 * CanvasGridMargin;
+            if (data.OddNumberOfBricks)
+                canvas.Width = (data.length + data.NumberOfBricks + 1) * BrickSize + 2 * CanvasGridMargin;
             else
-                canvas.Width = Data.length * BrickSize + 2 * CanvasGridMargin;
+                canvas.Width = data.length * BrickSize + 2 * CanvasGridMargin;
 
-            canvas.Height = Data.height * BrickSize + 2 * CanvasGridMargin;
+            canvas.Height = data.height * BrickSize + 2 * CanvasGridMargin;
         }
         private void DrawAllBricks()
         {
             int BrickLength, SlotNumber;
-            for (int i = 0; i < Data.height; i++)
+            for (int i = 0; i < data.height; i++)
             {
                 SlotNumber = 0;
-                for (int j = 0; j < Data.NumberOfBricks; j++)
+                for (int j = 0; j < data.NumberOfBricks; j++)
                 {
-                    if (j == 2 && Data.OddNumberOfBricks)
+                    if (j == 2 && data.OddNumberOfBricks)
                     {
-                        BrickLength = Data.NumberOfBricks + 1;
+                        BrickLength = data.NumberOfBricks + 1;
                         DrawRectangle(new Point(SlotNumber, i), BrickLength);
                         SlotNumber += BrickLength;
                     }
 
-                    BrickLength = Data.Bricks[i, j];
+                    BrickLength = data.Bricks[i, j];
                     DrawRectangle(new Point(SlotNumber, i), BrickLength);
                     SlotNumber += BrickLength;
                 }
@@ -96,7 +98,7 @@ namespace BwInf36Runde2Aufgabe1
         }
         private Point PlotToCanvas(Point P)
         {
-            return new Point(P.X * BrickSize + CanvasGridMargin, (Data.height - P.Y - 1) * BrickSize + CanvasGridMargin);
+            return new Point(P.X * BrickSize + CanvasGridMargin, (data.height - P.Y - 1) * BrickSize + CanvasGridMargin);
         }
 
         private void Warten(Canvas canvas)
@@ -126,7 +128,7 @@ namespace BwInf36Runde2Aufgabe1
             pngEncoder.Save(ms);
             ms.Close();
             Directory.CreateDirectory("Results");
-            string path = string.Format(@"Results\{0}.png", Data.NumberOfBricks.ToString());
+            string path = string.Format(@"Results\{0}.png", data.NumberOfBricks.ToString());
             System.IO.File.WriteAllBytes(path, ms.ToArray());
             Console.WriteLine("Done");
         }

@@ -19,20 +19,23 @@ namespace BwInf36Runde2Aufgabe1
             Add("StupidSolver");
             Add("AverageSolver");
             Add("SophisticatedSolver");
+            Add("SophisticatedSolvers");
         }
     }
     public enum KindOfSolver
     {
-        StupidSolver, AverageSolver, SophisticatedSolver
+        StupidSolver, AverageSolver, SophisticatedSolver, SophisticatedSolvers
     }
 
     abstract class Solver
     {
+        protected Data data;
         protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
 
-        public Solver()
+        public Solver(Data AData)
         {
+            data = AData;
         }
 
         protected void StartStopwatch()
@@ -42,19 +45,19 @@ namespace BwInf36Runde2Aufgabe1
         protected void StopStopwatchAndSaveElapsedTime()
         {
             stopwatch.Stop();
-            Data.ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
+            data.ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
 
         }
 
         public void Solve()
         {
-            statistics = new Statistics(Data.length);
+            statistics = new Statistics(data);
             StartStopwatch();
 
             try
             {
                 SetBeginningBricks();
-                Backtracking(Data.height + 1);
+                Backtracking(data.height + 1);
             }
             catch (Exception e)
             {
@@ -74,13 +77,13 @@ namespace BwInf36Runde2Aufgabe1
         private void SetBeginningBricks()
         {
             int JointPosition;
-            for (int height = 0; height < Data.height; height++)
+            for (int height = 0; height < data.height; height++)
             {
                 JointPosition = height + 1;
-                Data.CurrentJointPosition[height] = JointPosition;
-                Data.UsedBricks[height, height] = true;
-                Data.Bricks[height, 0] = JointPosition;
-                Data.NumberOfBricksInGivenRow[height] = 1;
+                data.CurrentJointPosition[height] = JointPosition;
+                data.UsedBricks[height, height] = true;
+                data.Bricks[height, 0] = JointPosition;
+                data.NumberOfBricksInGivenRow[height] = 1;
             }
         }
         abstract protected void Backtracking(int jointNumber);
@@ -95,15 +98,15 @@ namespace BwInf36Runde2Aufgabe1
             int currentRowJointPosition, neededBrickLength;
             List<Tuple<int, int>> ValidBricks = new List<Tuple<int, int>>();
 
-            for (int height = 0; height < Data.height; height++)
+            for (int height = 0; height < data.height; height++)
             {
-                currentRowJointPosition = Data.CurrentJointPosition[height];
+                currentRowJointPosition = data.CurrentJointPosition[height];
                 neededBrickLength = recursionJointPosition - currentRowJointPosition;
 
-                bool isBrickAvailabe = neededBrickLength <= Data.NumberOfBricks;
+                bool isBrickAvailabe = neededBrickLength <= data.NumberOfBricks;
                 if (isBrickAvailabe)
                 {
-                    bool isBrickUnUsed = !Data.UsedBricks[height, neededBrickLength - 1];
+                    bool isBrickUnUsed = !data.UsedBricks[height, neededBrickLength - 1];
                     if (isBrickUnUsed)
                     {
                         ValidBricks.Add(new Tuple<int, int>(height, neededBrickLength));
@@ -119,20 +122,20 @@ namespace BwInf36Runde2Aufgabe1
 
             int height = tuple.Item1;
             int length = tuple.Item2;
-            int numberOfBricksInRow = Data.NumberOfBricksInGivenRow[height];
-            Data.Bricks[height, numberOfBricksInRow] = length;
-            Data.UsedBricks[height, length - 1] = true;
-            Data.CurrentJointPosition[height] = recursionJointPosition;
-            Data.NumberOfBricksInGivenRow[height]++;
+            int numberOfBricksInRow = data.NumberOfBricksInGivenRow[height];
+            data.Bricks[height, numberOfBricksInRow] = length;
+            data.UsedBricks[height, length - 1] = true;
+            data.CurrentJointPosition[height] = recursionJointPosition;
+            data.NumberOfBricksInGivenRow[height]++;
         }
         protected void RemoveBrickFromWall(Tuple<int, int> tuple, int recursionJointPosition)
         {
             int height = tuple.Item1;
             int length = tuple.Item2;
-            int numberOfBricksInRow = --Data.NumberOfBricksInGivenRow[height];
-            Data.Bricks[height, numberOfBricksInRow] = 0;
-            Data.UsedBricks[height, length - 1] = false;
-            Data.CurrentJointPosition[height] = recursionJointPosition - length;
+            int numberOfBricksInRow = --data.NumberOfBricksInGivenRow[height];
+            data.Bricks[height, numberOfBricksInRow] = 0;
+            data.UsedBricks[height, length - 1] = false;
+            data.CurrentJointPosition[height] = recursionJointPosition - length;
         }
         protected bool CheckForInvalidRow()
         {
@@ -140,9 +143,9 @@ namespace BwInf36Runde2Aufgabe1
         }
         protected bool CheckForValidSolution()
         {
-            for (int height = 0; height < Data.height; height++)
+            for (int height = 0; height < data.height; height++)
             {
-                bool isUncloseableGap = (Data.length - Data.CurrentJointPosition[height]) > Data.NumberOfBricks;
+                bool isUncloseableGap = (data.length - data.CurrentJointPosition[height]) > data.NumberOfBricks;
                 if (isUncloseableGap)
                 {
                     return false;
@@ -152,11 +155,11 @@ namespace BwInf36Runde2Aufgabe1
         }
         protected void InsertMissingPieces()
         {
-            for (int height = 0; height < Data.height; height++)
+            for (int height = 0; height < data.height; height++)
             {
-                int brickLength = Data.length - Data.CurrentJointPosition[height];
+                int brickLength = data.length - data.CurrentJointPosition[height];
                 if (brickLength > 0)
-                    Data.Bricks[height, Data.NumberOfBricks - 1] = brickLength;
+                    data.Bricks[height, data.NumberOfBricks - 1] = brickLength;
             }
         }
         /// <summary>
@@ -168,16 +171,16 @@ namespace BwInf36Runde2Aufgabe1
         {
             int currentRowJointPosition, neededBrickLength;
 
-            for (int height = 0; height < Data.height; height++)
+            for (int height = 0; height < data.height; height++)
             {
-                currentRowJointPosition = Data.CurrentJointPosition[height];
+                currentRowJointPosition = data.CurrentJointPosition[height];
                 neededBrickLength = recursionJointPosition - currentRowJointPosition;
 
                 bool isBrickAvailabe = false;
 
-                for (int brickLength = neededBrickLength; brickLength <= Data.NumberOfBricks; brickLength++)
+                for (int brickLength = neededBrickLength; brickLength <= data.NumberOfBricks; brickLength++)
                 {
-                    bool isThisBrickAvailabe = !Data.UsedBricks[height, brickLength - 1];
+                    bool isThisBrickAvailabe = !data.UsedBricks[height, brickLength - 1];
                     if (isThisBrickAvailabe)
                     {
                         isBrickAvailabe = true;
@@ -199,12 +202,12 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class StupidSolver : Solver
     {
-        public StupidSolver() { }
+        public StupidSolver(Data AData) : base(AData) { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
             //Check if end is reached and if so if a valid solution has been found
-            if (recursionJointPosition > Data.length && CheckForValidSolution())
+            if (recursionJointPosition > data.length && CheckForValidSolution())
             {
                 InsertMissingPieces();
                 throw new FoundSolutionExeptions();
@@ -230,12 +233,12 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class AverageSolver : Solver
     {
-        public AverageSolver() { }
+        public AverageSolver(Data AData) : base(AData) { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
             //Check if end is reached and if so if a valid solution has been found
-            if (recursionJointPosition > Data.length && CheckForValidSolution())
+            if (recursionJointPosition > data.length && CheckForValidSolution())
             {
                 InsertMissingPieces();
                 throw new FoundSolutionExeptions();
@@ -263,7 +266,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class SophisticatedSolver : Solver
     {
-        public SophisticatedSolver() { }
+        public SophisticatedSolver(Data AData) : base(AData) { }
 
         protected override void Backtracking(int JointNumber)
         {

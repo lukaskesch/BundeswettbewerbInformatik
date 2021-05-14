@@ -12,80 +12,128 @@ namespace BwInf36Runde2Aufgabe1
     public class ProgramHandler
     {
         private MainWindow mainWindow;
+        private MetaData metaData;
+        private Logger logger;
+
         public ProgramHandler(MainWindow AMainWindow)
         {
             mainWindow = AMainWindow;
+            metaData = new MetaData();
+            logger = new Logger();
+
+            logger.Start();
+            logger.Print("test");
         }
         public void Start()
         {
             ReadInput();
-
-            int numberOfCores = Environment.ProcessorCount;
-
-            Logger logger = new Logger();
-            logger.Start();
-            logger.Print("test");
-
-            ThreadStart threadStart = new ThreadStart(Calculate);
-            Thread thread = new Thread(threadStart);
-            thread.Priority = ThreadPriority.Highest;
-            thread.Start();
-            while (thread.IsAlive)
-            {
-
-            }
-
-            //thread.Join();
-            //Calculate();
-
-
-            //Thread.Sleep(15000);
+            PrepareDatastructures();
+            Calculate();
             PrintOutput();
         }
-        public void Calculate()
+        public void RunStupidSolver(object obj)
         {
-            {
-                StupidSolver stupidSolver = new StupidSolver();
-                stupidSolver.Solve();
-            }
+            Data data = (Data)obj;
+            StupidSolver stupidSolver = new StupidSolver(data);
+            stupidSolver.Solve();
         }
+        public void RunAverageSolver(object obj)
+        {
+            Data data = (Data)obj;
+            AverageSolver averageSolver = new AverageSolver(data);
+            averageSolver.Solve();
+        }
+        public void RunSophisticatedSolver(object obj)
+        {
+            Data data = (Data)obj;
+            SophisticatedSolver sophisticatedSolver = new SophisticatedSolver(data);
+            sophisticatedSolver.Solve();
+        }
+
         public void ReadInput()
         {
-            bool ValidInput = Data.ReadInput(mainWindow.TextBoxInput.Text);
-            if (!ValidInput)
+            int NumberOfBricks;
+            try
+            {
+                NumberOfBricks = int.Parse(mainWindow.TextBoxInput.Text);
+
+                bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 120);
+                if (OutOfBounds)
+                {
+                    throw new System.IndexOutOfRangeException();
+                }
+            }
+            catch (Exception)
             {
                 MessageBox.Show("Please enter an integer between 3 and 120", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
+            metaData.input = NumberOfBricks;
+
             int index = mainWindow.ComboBoxSolvers.SelectedIndex;
             switch (index)
             {
                 case 0:
-                    Data.kindOfSolver = KindOfSolver.StupidSolver;
-
-
+                    metaData.kindOfSolver = KindOfSolver.StupidSolver;
                     return;
                 case 1:
-                    Data.kindOfSolver = KindOfSolver.AverageSolver;
-                    AverageSolver averageSolver = new AverageSolver();
-                    averageSolver.Solve();
+                    metaData.kindOfSolver = KindOfSolver.AverageSolver;
                     break;
                 case 2:
-                    Data.kindOfSolver = KindOfSolver.SophisticatedSolver;
-                    SophisticatedSolver sophisticatedSolver = new SophisticatedSolver();
-                    sophisticatedSolver.Solve();
+                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolver;
+                    break;
+                case 3:
+                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolvers;
                     break;
                 default:
                     MessageBox.Show("Please select a solver", "Action required", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
             }
         }
+        private void PrepareDatastructures()
+        {
+            switch (metaData.kindOfSolver)
+            {
+                case KindOfSolver.StupidSolver:
+                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunStupidSolver)));
+                    break;
+                case KindOfSolver.AverageSolver:
+                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunAverageSolver)));
+                    break;
+                case KindOfSolver.SophisticatedSolver:
+                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                    break;
+                case KindOfSolver.SophisticatedSolvers:
+                    int length = Environment.ProcessorCount;
+                    if (length > 1) { length--; }
+                    for (int i = 0; i < length; i++)
+                    {
+                        metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
+        private void Calculate()
+        {
+            foreach (CalculationThread calculationThread in metaData.Threads)
+            {
+                calculationThread.Start();
+            }
+
+            //metaData.Threads[0].Start();
+            while (metaData.Threads[0].thread.IsAlive)
+            {
+
+            }
+        }
         public void PrintOutput()
         {
-            mainWindow.LabelElapsedTime.Content = Data.ElapsedSeconds.ToString();
+            mainWindow.LabelElapsedTime.Content = metaData.Threads[0].data.ElapsedSeconds.ToString();
 
-            Drawing drawing = new Drawing(mainWindow);
+            Drawing drawing = new Drawing(mainWindow, metaData.Threads[0].data);
             drawing.Draw();
         }
     }

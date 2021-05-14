@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BwInf36Runde2Aufgabe1"
         mc:Ignorable="d"
-        Title="Monitor" Height="450" Width="400">
+        Title="Monitor" Height="450" Width="400" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBlock Name="TextBlockConsole" FontSize="14" Background="Black" Foreground="White"/>
+        <TextBlock Name="TextBlockConsole" FontSize="16" Background="Black" Foreground="White" TextWrapping="Wrap"/>
     </Grid>
 </Window>

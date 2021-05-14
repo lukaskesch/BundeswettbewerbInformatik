@@ -2,18 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BwInf36Runde2Aufgabe1
 {
-    public static class Data
+    public class MetaData
     {
-        public static KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
-        public static double ElapsedSeconds;
-        public static bool OddNumberOfBricks;
-        public static int NumberOfBricks;
-        public static int height;
-        public static int length;
+        public int input;
+        public KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
+        public List<CalculationThread> Threads = new List<CalculationThread>();
+
+    }
+    public struct CalculationThread
+    {
+        public Thread thread;
+        public Data data;
+        public CalculationThread(int input, KindOfSolver kindOfSolver, ParameterizedThreadStart threadStart)
+        {
+            data = new Data(input, kindOfSolver);
+            thread = new Thread(threadStart);
+            thread.Priority = ThreadPriority.Highest;
+        }
+        public void Start()
+        {
+            thread.Start(data);
+        }
+
+    }
+    public class Data
+    {
+        public KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
+        public double ElapsedSeconds;
+        public bool OddNumberOfBricks;
+        public int NumberOfBricks;
+        public int height;
+        public int length;
 
         ///// <summary>
         ///// Stores if the ith joint is free
@@ -23,53 +47,38 @@ namespace BwInf36Runde2Aufgabe1
         /// <summary>
         /// Stores the width of the brick in the ith row in the jth slot
         /// </summary>
-        public static int[,] Bricks;
+        public int[,] Bricks;
 
         /// <summary>
         /// Stores if a brick of length j+1 is used in the ith row
         /// </summary>
-        public static bool[,] UsedBricks;
+        public bool[,] UsedBricks;
 
         /// <summary>
         /// Stores the current Joint position in the ith row
         /// </summary>
-        public static int[] CurrentJointPosition;
+        public int[] CurrentJointPosition;
 
         /// <summary>
         /// Stores the number of bricks in the ith row
         /// </summary>
-        public static int[] NumberOfBricksInGivenRow;
+        public int[] NumberOfBricksInGivenRow;
 
-        public static bool ReadInput(string input)
+        public Data(int ANumberOfBricks, KindOfSolver AKindOfSolver)
         {
-            try
-            {
-                NumberOfBricks = int.Parse(input);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            NumberOfBricks = ANumberOfBricks;
+            PrepareDatastructures();
+            kindOfSolver = AKindOfSolver;
+        }
 
-            bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 120);
-            if (OutOfBounds)
-            {
-                return false;
-            }
-
-
+        private void PrepareDatastructures()
+        {
             OddNumberOfBricks = NumberOfBricks % 2 != 0;
             if (OddNumberOfBricks)
             {
                 NumberOfBricks--;
             }
 
-            PrepareDatastructures();
-            return true;
-        }
-
-        private static void PrepareDatastructures()
-        {
             height = (NumberOfBricks + 2) / 2;
             length = (NumberOfBricks * (NumberOfBricks + 1)) / 2;
 
