@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
@@ -31,6 +32,8 @@ namespace BwInf36Runde2Aufgabe1
             SetCanvasScale();
             Warten(canvas);
             DrawAllBricks();
+            Warten(canvas);
+            SaveImage();
         }
         private void SetCanvasScale()
         {
@@ -98,11 +101,30 @@ namespace BwInf36Runde2Aufgabe1
         private void Warten(Canvas canvas)
         {
             Action DummyAction = DoNothing;
-            Thread.Sleep(100);
+            Thread.Sleep(1000);
             canvas.Dispatcher.Invoke(DispatcherPriority.Input, DummyAction);
         }
 
         private void DoNothing() { }
 
+        private void SaveImage()
+        {
+            Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 60);
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right,
+              (int)rect.Bottom, 96d, 96d, System.Windows.Media.PixelFormats.Default);
+            rtb.Render(canvas);
+
+            //endcode as PNG
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            //save to memory stream
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            pngEncoder.Save(ms);
+            ms.Close();
+            System.IO.File.WriteAllBytes("logo.png", ms.ToArray());
+            Console.WriteLine("Done");
+        }
     }
 }
