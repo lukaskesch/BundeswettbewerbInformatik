@@ -28,33 +28,23 @@ namespace BwInf36Runde2Aufgabe1
 
     abstract class Solver
     {
-        protected MainWindow mainWindow;
         protected Statistics statistics;
         private Stopwatch stopwatch = new Stopwatch();
-        private string ElapsedTime;
 
-        public Solver(MainWindow AMainWindow)
+        public Solver()
         {
-            mainWindow = AMainWindow;
         }
 
         protected void StartStopwatch()
         {
             stopwatch.Restart();
         }
-        protected void StopStopwatchAndPrintElapsedTime()
+        protected void StopStopwatchAndSaveElapsedTime()
         {
             stopwatch.Stop();
-            double ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
-            ElapsedTime = ElapsedSeconds.ToString();
-            mainWindow.LabelElapsedTime.Content = ElapsedTime;
-        }
-        protected void PrintResult()
-        {
-            Drawing drawing = new Drawing(mainWindow);
-            drawing.Draw();
-        }
+            Data.ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
 
+        }
 
         public void Solve()
         {
@@ -68,14 +58,13 @@ namespace BwInf36Runde2Aufgabe1
             }
             catch (Exception e)
             {
-                StopStopwatchAndPrintElapsedTime();
-                PrintResult();
-                statistics.SaveStatistics(ElapsedTime);
+                StopStopwatchAndSaveElapsedTime();
+                statistics.SaveStatistics();
                 //MessageBox.Show(e.Message);
                 return;
             }
 
-            StopStopwatchAndPrintElapsedTime();
+            StopStopwatchAndSaveElapsedTime();
             MessageBox.Show("No solution could be found");
         }
 
@@ -210,7 +199,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class StupidSolver : Solver
     {
-        public StupidSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public StupidSolver() { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
@@ -241,7 +230,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class AverageSolver : Solver
     {
-        public AverageSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public AverageSolver() { }
 
         protected override void Backtracking(int recursionJointPosition)
         {
@@ -274,7 +263,7 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     class SophisticatedSolver : Solver
     {
-        public SophisticatedSolver(MainWindow AMainWindow) : base(AMainWindow) { }
+        public SophisticatedSolver() { }
 
         protected override void Backtracking(int JointNumber)
         {

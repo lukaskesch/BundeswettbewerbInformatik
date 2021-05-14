@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -28,35 +29,22 @@ namespace BwInf36Runde2Aufgabe1
 
         private void ButtonBerechnen_Click(object sender, RoutedEventArgs e)
         {
-            bool ValidInput = Data.ReadInput(TextBoxInput.Text);
-            if (!ValidInput)
-            {
-                MessageBox.Show("Please enter an integer between 3 and 120", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+            button1_Click();
+            ProgramHandler programHandler = new ProgramHandler(this);
+            programHandler.Start();
+        }
 
-            int index = ComboBoxSolvers.SelectedIndex;
-            switch (index)
-            {
-                case 0:
-                    Data.kindOfSolver = KindOfSolver.StupidSolver;
-                    StupidSolver stupidSolver = new StupidSolver(this);
-                    stupidSolver.Solve();
-                    return;
-                case 1:
-                    Data.kindOfSolver = KindOfSolver.AverageSolver;
-                    AverageSolver averageSolver = new AverageSolver(this);
-                    averageSolver.Solve();
-                    break;
-                case 2:
-                    Data.kindOfSolver = KindOfSolver.SophisticatedSolver;
-                    SophisticatedSolver sophisticatedSolver = new SophisticatedSolver(this);
-                    sophisticatedSolver.Solve();
-                    break;
-                default:
-                    MessageBox.Show("Please select a solver", "Action required", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-            }
+        [DllImport("Kernel32")]
+        public static extern void AllocConsole();
+
+        [DllImport("Kernel32")]
+        public static extern void FreeConsole();
+
+
+        private void button1_Click()
+        {
+            AllocConsole();
+            Console.WriteLine("test");
         }
     }
 }
