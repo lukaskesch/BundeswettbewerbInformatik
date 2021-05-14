@@ -22,7 +22,9 @@ namespace BwInf36Runde2Aufgabe1
 
             int numberOfCores = Environment.ProcessorCount;
 
-
+            Logger logger = new Logger();
+            logger.Start();
+            logger.Print("test");
 
             ThreadStart threadStart = new ThreadStart(Calculate);
             Thread thread = new Thread(threadStart);
