@@ -163,11 +163,7 @@ namespace BwInf36Runde2Aufgabe1
             int indexThread = GetFinsishedThreads();
             if (indexThread >= 0)
             {
-                dispatcherTimer.Stop();
-                AbortAllUnfinishedThreads();
-                metaData.solutionIndex = indexThread;
-                PrintOutput();
-                UnlockUI();
+                ThreadFinished(indexThread);
                 return;
             }
 
@@ -184,6 +180,20 @@ namespace BwInf36Runde2Aufgabe1
                 return;
             }
 
+        }
+        private void ThreadFinished(int indexThread)
+        {
+            dispatcherTimer.Stop();
+            AbortAllUnfinishedThreads();
+            metaData.solutionIndex = indexThread;
+            PrintOutput();
+            UnlockUI();
+
+            if ((bool)metaData.mainWindow.CheckBoxContinue.IsChecked)
+            {
+                metaData.mainWindow.TextBoxInput.Text = (metaData.input + 2).ToString();
+                Start();
+            }
         }
         private int GetFinsishedThreads()
         {
