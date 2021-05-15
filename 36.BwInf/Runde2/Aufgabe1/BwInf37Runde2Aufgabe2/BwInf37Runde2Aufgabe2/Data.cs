@@ -10,13 +10,37 @@ namespace BwInf36Runde2Aufgabe1
     public class MetaData
     {
         public int input;
-        public KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
-        public List<CalculationThread> Threads = new List<CalculationThread>();
+        public int tick;
+        public readonly int maxTick;
+        public int solutionIndex;
+        public Logger logger;
+        public MainWindow mainWindow;
+        public KindOfSolver kindOfSolver;
+
+        public List<CalculationThread> threads;
+
+        public MetaData(MainWindow AMainWindow)
+        {
+            tick = 0;
+            maxTick = 13;
+            solutionIndex = -1;
+            mainWindow = AMainWindow;
+            threads = new List<CalculationThread>();
+
+            logger = new Logger();
+            logger.Start();
+        }
+        public void Reset()
+        {
+            threads.Clear();
+            tick = 0;
+            solutionIndex = -1;
+        }
 
     }
     public struct CalculationThread
     {
-        public Thread thread;
+        public readonly Thread thread;
         public Data data;
         public CalculationThread(int input, KindOfSolver kindOfSolver, ParameterizedThreadStart threadStart)
         {
@@ -28,7 +52,10 @@ namespace BwInf36Runde2Aufgabe1
         {
             thread.Start(data);
         }
-
+        public void Abort()
+        {
+            thread.Abort();
+        }
     }
     public class Data
     {

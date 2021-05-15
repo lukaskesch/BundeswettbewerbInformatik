@@ -24,8 +24,9 @@ namespace BwInf36Runde2Aufgabe1
         }
         public void Print(string s)
         {
-            consoleWindow.TextBlockConsole.Text += Environment.NewLine;
+            consoleWindow.TextBlockConsole.Text += DateTime.Now.ToString("HH:mm:ss") + ": ";
             consoleWindow.TextBlockConsole.Text += s;
+            consoleWindow.TextBlockConsole.Text += Environment.NewLine;
         }
         public void Stop()
         {

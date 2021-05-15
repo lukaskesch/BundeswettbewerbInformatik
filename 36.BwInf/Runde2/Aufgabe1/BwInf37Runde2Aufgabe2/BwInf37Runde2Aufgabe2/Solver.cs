@@ -248,7 +248,7 @@ namespace BwInf36Runde2Aufgabe1
                 return;
             }
             List<Tuple<int, int>> ValidBricks = GetNextValidBricks(recursionJointPosition);
-            //ValidBricks.Shuffle();
+            ValidBricks.Shuffle();
 
             foreach (Tuple<int, int> tuple in ValidBricks)
             {

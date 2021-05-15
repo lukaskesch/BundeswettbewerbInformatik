@@ -6,30 +6,117 @@ using System.Text;
 using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace BwInf36Runde2Aufgabe1
 {
     public class ProgramHandler
     {
-        private MainWindow mainWindow;
+        private DispatcherTimer dispatcherTimer;
         private MetaData metaData;
-        private Logger logger;
 
-        public ProgramHandler(MainWindow AMainWindow)
+
+        public ProgramHandler(MainWindow mainWindow)
         {
-            mainWindow = AMainWindow;
-            metaData = new MetaData();
-            logger = new Logger();
+            metaData = new MetaData(mainWindow);
 
-            logger.Start();
-            logger.Print("test");
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
         }
         public void Start()
         {
             ReadInput();
             PrepareDatastructures();
             Calculate();
-            PrintOutput();
+            dispatcherTimer.Start();
+        }
+        private void Restart()
+        {
+            metaData.Reset();
+            PrepareDatastructures();
+            Calculate();
+            dispatcherTimer.Start();
+        }
+
+        private void ReadInput()
+        {
+            int NumberOfBricks;
+            try
+            {
+                NumberOfBricks = int.Parse(metaData.mainWindow.TextBoxInput.Text);
+
+                bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 120);
+                if (OutOfBounds)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Please enter an integer between 3 and 120", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            int index = metaData.mainWindow.ComboBoxSolvers.SelectedIndex;
+            switch (index)
+            {
+                case 0:
+                    metaData.kindOfSolver = KindOfSolver.StupidSolver;
+                    break;
+                case 1:
+                    metaData.kindOfSolver = KindOfSolver.AverageSolver;
+                    break;
+                case 2:
+                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolver;
+                    break;
+                case 3:
+                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolvers;
+                    break;
+                default:
+                    MessageBox.Show("Please select a solver", "Action required", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+            }
+
+            metaData.input = NumberOfBricks;
+            metaData.logger.Print(string.Format("Requested {0} for n = {1}", metaData.kindOfSolver, metaData.input));
+        }
+        private void PrepareDatastructures()
+        {
+
+            switch (metaData.kindOfSolver)
+            {
+                case KindOfSolver.StupidSolver:
+                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunStupidSolver)));
+                    break;
+                case KindOfSolver.AverageSolver:
+                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunAverageSolver)));
+                    break;
+                case KindOfSolver.SophisticatedSolver:
+                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                    break;
+                case KindOfSolver.SophisticatedSolvers:
+                    int length = Environment.ProcessorCount;
+                    if (length > 1) { length--; }
+                    if (length > 4) { length--; }
+                    if (length > 8) { length--; }
+                    for (int i = 0; i < length; i++)
+                    {
+                        metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                    }
+                    break;
+                default:
+                    return;
+            }
+        }
+        private void Calculate()
+        {
+            int threadNumber = 1;
+            foreach (CalculationThread calculationThread in metaData.threads)
+            {
+                metaData.logger.Print(string.Format("Thread #{0} started", threadNumber++));
+                calculationThread.Start();
+            }
         }
         public void RunStupidSolver(object obj)
         {
@@ -49,91 +136,74 @@ namespace BwInf36Runde2Aufgabe1
             SophisticatedSolver sophisticatedSolver = new SophisticatedSolver(data);
             sophisticatedSolver.Solve();
         }
-
-        public void ReadInput()
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            int NumberOfBricks;
-            try
-            {
-                NumberOfBricks = int.Parse(mainWindow.TextBoxInput.Text);
+            metaData.logger.Print(string.Format("Tick #{0}", ++metaData.tick));
 
-                bool OutOfBounds = (NumberOfBricks < 3) || (NumberOfBricks > 120);
-                if (OutOfBounds)
-                {
-                    throw new System.IndexOutOfRangeException();
-                }
-            }
-            catch (Exception)
+            int indexThread = GetFinsishedThreads();
+            if (indexThread >= 0)
             {
-                MessageBox.Show("Please enter an integer between 3 and 120", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                dispatcherTimer.Stop();
+                AbortAllUnfinishedThreads();
+                metaData.solutionIndex = indexThread;
+                PrintOutput();
                 return;
             }
 
-            metaData.input = NumberOfBricks;
-
-            int index = mainWindow.ComboBoxSolvers.SelectedIndex;
-            switch (index)
+            if (metaData.tick >= metaData.maxTick)
             {
-                case 0:
-                    metaData.kindOfSolver = KindOfSolver.StupidSolver;
-                    return;
-                case 1:
-                    metaData.kindOfSolver = KindOfSolver.AverageSolver;
-                    break;
-                case 2:
-                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolver;
-                    break;
-                case 3:
-                    metaData.kindOfSolver = KindOfSolver.SophisticatedSolvers;
-                    break;
-                default:
-                    MessageBox.Show("Please select a solver", "Action required", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
+                metaData.logger.Print(string.Format("Executiontime of {0} ticks exceeded", metaData.maxTick));
+                metaData.logger.Print(string.Format("Stopping all {0} threads", metaData.threads.Count));
+                AbortAllThreads();
+                dispatcherTimer.Stop();
+                return;
+            }
+
+        }
+        private int GetFinsishedThreads()
+        {
+            int index = 0;
+            foreach (CalculationThread calculationThread in metaData.threads)
+            {
+                if (!calculationThread.thread.IsAlive)
+                {
+                    metaData.logger.Print(string.Format("Thread #{0} finished", index + 1));
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+        }
+        private void AbortAllUnfinishedThreads()
+        {
+            int index = 1;
+            foreach (CalculationThread calculationThread in metaData.threads)
+            {
+                if (calculationThread.thread.IsAlive)
+                {
+                    calculationThread.Abort();
+                    metaData.logger.Print(string.Format("Thread #{0} stopped", index));
+                    index++;
+                }
             }
         }
-        private void PrepareDatastructures()
+        private void AbortAllThreads()
         {
-            switch (metaData.kindOfSolver)
+            int index = 1;
+            foreach (CalculationThread calculationThread in metaData.threads)
             {
-                case KindOfSolver.StupidSolver:
-                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunStupidSolver)));
-                    break;
-                case KindOfSolver.AverageSolver:
-                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunAverageSolver)));
-                    break;
-                case KindOfSolver.SophisticatedSolver:
-                    metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
-                    break;
-                case KindOfSolver.SophisticatedSolvers:
-                    int length = Environment.ProcessorCount;
-                    if (length > 1) { length--; }
-                    for (int i = 0; i < length; i++)
-                    {
-                        metaData.Threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
-                    }
-                    break;
-                default:
-                    return;
+                calculationThread.Abort();
+                metaData.logger.Print(string.Format("Thread #{0} stopped", index));
+                index++;
             }
         }
-        private void Calculate()
+        private void PrintOutput()
         {
-            foreach (CalculationThread calculationThread in metaData.Threads)
-            {
-                calculationThread.Start();
-            }
+            metaData.logger.Print("Printing solution");
 
-            //metaData.Threads[0].Start();
-            while (metaData.Threads[0].thread.IsAlive)
-            {
+            metaData.mainWindow.LabelElapsedTime.Content = metaData.threads[metaData.solutionIndex].data.ElapsedSeconds.ToString();
 
-            }
-        }
-        public void PrintOutput()
-        {
-            mainWindow.LabelElapsedTime.Content = metaData.Threads[0].data.ElapsedSeconds.ToString();
-
-            Drawing drawing = new Drawing(mainWindow, metaData.Threads[0].data);
+            Drawing drawing = new Drawing(metaData.mainWindow, metaData.threads[metaData.solutionIndex].data);
             drawing.Draw();
         }
     }
