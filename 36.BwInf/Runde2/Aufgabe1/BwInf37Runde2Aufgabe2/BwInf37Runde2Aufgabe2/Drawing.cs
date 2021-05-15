@@ -42,13 +42,13 @@ namespace BwInf36Runde2Aufgabe1
         private void LockUI()
         {
             mainWindow.CanvasGrid.Children.Clear();
-            mainWindow.ResizeMode = ResizeMode.NoResize;
+            //mainWindow.ResizeMode = ResizeMode.NoResize;
             //mainWindow.WindowState = WindowState.Minimized;
             //Thread.SpinWait(500);
         }
         private void UnlockUI()
         {
-            mainWindow.ResizeMode = ResizeMode.CanResize;
+            //mainWindow.ResizeMode = ResizeMode.CanResize;
             //mainWindow.WindowState = WindowState.Normal;
         }
         private void SetCanvasScale()
@@ -125,25 +125,39 @@ namespace BwInf36Runde2Aufgabe1
 
         private void SaveImage()
         {
-            // Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 60);
-            Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 100);
-            RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right,
-              (int)rect.Bottom, 96d, 96d, System.Windows.Media.PixelFormats.Default);
-            rtb.Render(canvas);
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(canvas);
+            double dpi = 96d;
 
-            //endcode as PNG
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)bounds.Width, (int)bounds.Height, dpi, dpi, System.Windows.Media.PixelFormats.Default);
+
+            DrawingVisual dv = new DrawingVisual();
+            using (DrawingContext dc = dv.RenderOpen())
+            {
+                VisualBrush vb = new VisualBrush(canvas);
+                dc.DrawRectangle(vb, null, new Rect(new Point(), bounds.Size));
+            }
+
+            rtb.Render(dv);
+
             BitmapEncoder pngEncoder = new PngBitmapEncoder();
             pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
 
-            //save to memory stream
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            try
+            {
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
 
-            pngEncoder.Save(ms);
-            ms.Close();
-            Directory.CreateDirectory("Results");
-            string path = string.Format(@"Results\{0}.png", data.NumberOfBricks.ToString());
-            System.IO.File.WriteAllBytes(path, ms.ToArray());
-            Console.WriteLine("Done");
+                pngEncoder.Save(ms);
+                ms.Close();
+
+
+                Directory.CreateDirectory("Results");
+                string path = string.Format(@"Results\{0}.png", data.NumberOfBricks.ToString());
+                System.IO.File.WriteAllBytes(path, ms.ToArray());
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show(err.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

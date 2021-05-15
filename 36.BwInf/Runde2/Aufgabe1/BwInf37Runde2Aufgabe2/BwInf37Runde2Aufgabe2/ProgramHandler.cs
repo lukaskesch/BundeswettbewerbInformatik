@@ -7,6 +7,7 @@ using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using System.Diagnostics;
 
 namespace BwInf36Runde2Aufgabe1
 {
@@ -23,6 +24,8 @@ namespace BwInf36Runde2Aufgabe1
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+
+            Process.Start(System.AppDomain.CurrentDomain.BaseDirectory);
         }
         public void Start()
         {
