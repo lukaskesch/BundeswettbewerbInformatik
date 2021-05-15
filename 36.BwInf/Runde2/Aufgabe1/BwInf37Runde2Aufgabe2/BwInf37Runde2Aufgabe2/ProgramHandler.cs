@@ -111,13 +111,13 @@ namespace BwInf36Runde2Aufgabe1
             switch (metaData.kindOfSolver)
             {
                 case KindOfSolver.StupidSolver:
-                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunStupidSolver)));
+                    metaData.threads.Add(new CalculationThread(1, metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunStupidSolver)));
                     break;
                 case KindOfSolver.AverageSolver:
-                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunAverageSolver)));
+                    metaData.threads.Add(new CalculationThread(1, metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunAverageSolver)));
                     break;
                 case KindOfSolver.SophisticatedSolver:
-                    metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                    metaData.threads.Add(new CalculationThread(1, metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
                     break;
                 case KindOfSolver.SophisticatedSolvers:
                     int length = Environment.ProcessorCount;
@@ -126,7 +126,7 @@ namespace BwInf36Runde2Aufgabe1
                     if (length > 8) { length--; }
                     for (int i = 0; i < length; i++)
                     {
-                        metaData.threads.Add(new CalculationThread(metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
+                        metaData.threads.Add(new CalculationThread(i + 1, metaData.input, metaData.kindOfSolver, new ParameterizedThreadStart(RunSophisticatedSolver)));
                     }
                     break;
                 default:
@@ -250,7 +250,8 @@ namespace BwInf36Runde2Aufgabe1
         {
             metaData.logger.Print("Printing solution");
 
-            metaData.mainWindow.LabelElapsedTime.Content = metaData.threads[metaData.solutionIndex].data.ElapsedSeconds.ToString();
+            string runtime = "Runtime of " + metaData.threads[metaData.solutionIndex].data.ElapsedSeconds.ToString() + "s";
+            metaData.mainWindow.LabelElapsedTime.Content = runtime;
 
             Drawing drawing = new Drawing(metaData.mainWindow, metaData.threads[metaData.solutionIndex].data);
             drawing.Draw();

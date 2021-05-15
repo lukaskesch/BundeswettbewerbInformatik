@@ -47,7 +47,7 @@ namespace BwInf36Runde2Aufgabe1
         private void SaveFile(string content)
         {
             Directory.CreateDirectory("Statistics");
-            string title = string.Format(@"Statistics\{0}-{1}.csv", data.kindOfSolver, DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss"));
+            string title = string.Format(@"Statistics\{0}-#{1}-{2}.csv", data.kindOfSolver, data.solverIndex, DateTime.Now.ToString("yyyy-MM-dd--HH-mm-ss"));
 
             StreamWriter WriterStatistics = File.AppendText(title);
             try

@@ -33,23 +33,27 @@ namespace BwInf36Runde2Aufgabe1
         {
             LockUI();
             SetCanvasScale();
-            Warten(canvas);
+            Wait(canvas);
             DrawAllBricks();
-            Warten(canvas);
-            SaveImage();
+            Wait(canvas);
+
+            SaveImage1();
+            //SaveImage2();
+
             UnlockUI();
         }
         private void LockUI()
         {
+            canvas.LayoutTransform = null;
             mainWindow.CanvasGrid.Children.Clear();
-            //mainWindow.ResizeMode = ResizeMode.NoResize;
-            //mainWindow.WindowState = WindowState.Minimized;
+            mainWindow.ResizeMode = ResizeMode.NoResize;
+            mainWindow.WindowState = WindowState.Minimized;
             //Thread.SpinWait(500);
         }
         private void UnlockUI()
         {
-            //mainWindow.ResizeMode = ResizeMode.CanResize;
-            //mainWindow.WindowState = WindowState.Normal;
+            mainWindow.ResizeMode = ResizeMode.CanResize;
+            mainWindow.WindowState = WindowState.Normal;
         }
         private void SetCanvasScale()
         {
@@ -114,16 +118,16 @@ namespace BwInf36Runde2Aufgabe1
             return new Point(P.X * BrickSize + CanvasGridMargin, (data.height - P.Y - 1) * BrickSize + CanvasGridMargin);
         }
 
-        private void Warten(Canvas canvas)
+        private void Wait(Canvas canvas)
         {
             Action DummyAction = DoNothing;
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             canvas.Dispatcher.Invoke(DispatcherPriority.Input, DummyAction);
         }
 
         private void DoNothing() { }
 
-        private void SaveImage()
+        private void SaveImage() //Image is too compressed
         {
             Rect bounds = VisualTreeHelper.GetDescendantBounds(canvas);
             double dpi = 96d;
@@ -151,13 +155,78 @@ namespace BwInf36Runde2Aufgabe1
 
 
                 Directory.CreateDirectory("Results");
-                string path = string.Format(@"Results\{0}.png", data.NumberOfBricks.ToString());
+                string path = string.Format(@"Results\{0}-0.png", data.NumberOfBricks.ToString());
                 System.IO.File.WriteAllBytes(path, ms.ToArray());
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        private void SaveImage1()
+        {
+
+            // Save current canvas transform
+            Transform transform = canvas.LayoutTransform;
+            // reset current transform (in case it is scaled or rotated)
+            canvas.LayoutTransform = null;
+
+            // Get the size of canvas
+            Size size = new Size(canvas.Width, canvas.Height);
+            // Measure and arrange the surface
+            // VERY IMPORTANT
+            canvas.Measure(size);
+            canvas.Arrange(new Rect(size));
+
+            // Create a render bitmap and push the surface to it
+            RenderTargetBitmap renderBitmap =
+              new RenderTargetBitmap(
+                (int)size.Width,
+                (int)size.Height,
+                96d,
+                96d,
+                PixelFormats.Pbgra32);
+            renderBitmap.Render(canvas);
+
+            // Create a file stream for saving image
+            Directory.CreateDirectory("Results");
+            string path = string.Format(@"Results\{0}-1.png", data.NumberOfBricks.ToString());
+
+            using (FileStream outStream = new FileStream(path, FileMode.Create))
+            {
+                // Use png encoder for our data
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                // push the rendered bitmap to it
+                encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+                // save the data to the stream
+                encoder.Save(outStream);
+            }
+
+            // Restore previously saved layout
+            canvas.LayoutTransform = transform;
+        }
+        private void SaveImage2()
+        {
+
+            // Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight + 60);
+            Rect rect = new Rect(canvas.Margin.Left, canvas.Margin.Top, canvas.ActualWidth, canvas.ActualHeight);
+            RenderTargetBitmap rtb = new RenderTargetBitmap((int)rect.Right,
+              (int)rect.Bottom, 96d, 96d, System.Windows.Media.PixelFormats.Default);
+            rtb.Render(canvas);
+
+            //endcode as PNG
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(rtb));
+
+            //save to memory stream
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+
+            pngEncoder.Save(ms);
+            ms.Close();
+            Directory.CreateDirectory("Results");
+            string path = string.Format(@"Results\{0}-2.png", data.NumberOfBricks.ToString());
+            System.IO.File.WriteAllBytes(path, ms.ToArray());
+            Console.WriteLine("Done");
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BwInf36Runde2Aufgabe1"
         mc:Ignorable="d"
-        Title="Bob der Baumeister entwirft Mauern" Height="450" Width="800"    Closing="Window_Closing" >
+        Title="Bob der Mauerbauer" Height="450" Width="800"    Closing="Window_Closing" WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
@@ -26,8 +26,7 @@
                     <Button Name="ButtonCalculate" Content="Calculate" Margin="10 5 5 5" Padding="5 0 5 0" Click="ButtonCalculate_Click"/>
                     <Button Name="ButtonStop" Content="Stop" Margin="10 5 5 5" Padding="5 0 5 0" Click="ButtonStop_Click" Visibility="Collapsed"/>
                     <CheckBox Name="CheckBoxContinue" Content="Continue with next n" VerticalAlignment="Center"/>
-                    <Label Content="Runtime [s]: " Margin="10  0" VerticalAlignment="Center"/>
-                    <Label Name="LabelElapsedTime" Margin="0 5 5 5"/>
+                    <Label Name="LabelElapsedTime" Margin="20 5 5 5" VerticalAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

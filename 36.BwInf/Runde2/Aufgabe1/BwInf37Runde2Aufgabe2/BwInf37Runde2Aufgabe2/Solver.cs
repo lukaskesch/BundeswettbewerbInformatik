@@ -46,7 +46,6 @@ namespace BwInf36Runde2Aufgabe1
         {
             stopwatch.Stop();
             data.ElapsedSeconds = (double)stopwatch.ElapsedMilliseconds / 1000;
-
         }
 
         public void Solve()
@@ -67,7 +66,6 @@ namespace BwInf36Runde2Aufgabe1
                 return;
             }
 
-            StopStopwatchAndSaveElapsedTime();
             MessageBox.Show("No solution could be found");
         }
 
@@ -268,8 +266,29 @@ namespace BwInf36Runde2Aufgabe1
     {
         public SophisticatedSolver(Data AData) : base(AData) { }
 
-        protected override void Backtracking(int JointNumber)
+        protected override void Backtracking(int recursionJointPosition)
         {
+            //Check if end is reached and if so if a valid solution has been found
+            if (recursionJointPosition > data.length && CheckForValidSolution())
+            {
+                InsertMissingPieces();
+                throw new FoundSolutionExeptions();
+            }
+            if (!CanContinuePruning(recursionJointPosition))
+            {
+                return;
+            }
+            List<Tuple<int, int>> ValidBricks = GetNextValidBricks(recursionJointPosition);
+            ValidBricks.Shuffle();
+
+            foreach (Tuple<int, int> tuple in ValidBricks)
+            {
+                AddBrickToWall(tuple, recursionJointPosition);
+
+                Backtracking(recursionJointPosition + 1);
+
+                RemoveBrickFromWall(tuple, recursionJointPosition);
+            }
         }
     }
 }

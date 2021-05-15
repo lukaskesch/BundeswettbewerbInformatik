@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BwInf36Runde2Aufgabe1"
         mc:Ignorable="d"
-        Title="Monitor" Height="450" Width="400" WindowStartupLocation="CenterScreen">
+        Title="Monitor" Height="600" Width="400" WindowStartupLocation="Manual" Left="100" Top="100">
     <Grid>
         <ScrollViewer Name="ScollViewerConsole" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <TextBlock Name="TextBlockConsole" FontSize="16" Background="Black" Foreground="White" TextWrapping="Wrap" />

@@ -42,9 +42,9 @@ namespace BwInf36Runde2Aufgabe1
     {
         public readonly Thread thread;
         public Data data;
-        public CalculationThread(int input, KindOfSolver kindOfSolver, ParameterizedThreadStart threadStart)
+        public CalculationThread(int id, int input, KindOfSolver kindOfSolver, ParameterizedThreadStart threadStart)
         {
-            data = new Data(input, kindOfSolver);
+            data = new Data(input, kindOfSolver, id);
             thread = new Thread(threadStart);
             thread.Priority = ThreadPriority.Highest;
         }
@@ -60,6 +60,7 @@ namespace BwInf36Runde2Aufgabe1
     public class Data
     {
         public KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
+        public int solverIndex;
         public double ElapsedSeconds;
         public bool OddNumberOfBricks;
         public int NumberOfBricks;
@@ -91,8 +92,9 @@ namespace BwInf36Runde2Aufgabe1
         /// </summary>
         public int[] NumberOfBricksInGivenRow;
 
-        public Data(int ANumberOfBricks, KindOfSolver AKindOfSolver)
+        public Data(int ANumberOfBricks, KindOfSolver AKindOfSolver, int ASolverIndex)
         {
+            solverIndex = ASolverIndex;
             NumberOfBricks = ANumberOfBricks;
             PrepareDatastructures();
             kindOfSolver = AKindOfSolver;
