@@ -7,6 +7,8 @@
         mc:Ignorable="d"
         Title="Monitor" Height="450" Width="400" WindowStartupLocation="CenterScreen">
     <Grid>
-        <TextBlock Name="TextBlockConsole" FontSize="16" Background="Black" Foreground="White" TextWrapping="Wrap" />
+        <ScrollViewer Name="ScollViewerConsole" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <TextBlock Name="TextBlockConsole" FontSize="16" Background="Black" Foreground="White" TextWrapping="Wrap" />
+        </ScrollViewer>
     </Grid>
 </Window>

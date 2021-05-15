@@ -25,15 +25,20 @@ namespace BwInf36Runde2Aufgabe1
         public MainWindow()
         {
             InitializeComponent();
-            programHandler = new ProgramHandler(this);
         }
 
         private void ButtonCalculate_Click(object sender, RoutedEventArgs e)
         {
+            programHandler = new ProgramHandler(this);
             programHandler.Start();
         }
 
         private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        {
+            programHandler.Stop();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             programHandler.Stop();
         }

@@ -46,6 +46,7 @@ namespace BwInf36Runde2Aufgabe1
             dispatcherTimer.Stop();
             AbortAllThreads();
             UnlockUI();
+            metaData.logger.Stop();
         }
         private void LockUI()
         {
@@ -158,7 +159,10 @@ namespace BwInf36Runde2Aufgabe1
         }
         private void dispatcherTimer_Tick(object sender, EventArgs e)
         {
-            metaData.logger.Print(string.Format("Tick #{0}", ++metaData.tick));
+            if ((metaData.tick++) % 5 == 0)
+            {
+                metaData.logger.Print(string.Format("Tick #{0}", metaData.tick - 1));
+            }
 
             int indexThread = GetFinsishedThreads();
             if (indexThread >= 0)
@@ -169,17 +173,9 @@ namespace BwInf36Runde2Aufgabe1
 
             if (metaData.tick >= metaData.maxTick)
             {
-                metaData.logger.Print(string.Format("Executiontime of {0} ticks exceeded", metaData.maxTick));
-                metaData.logger.Print(string.Format("Stopping all {0} threads", metaData.threads.Count));
-                AbortAllThreads();
-                dispatcherTimer.Stop();
-                if (metaData.kindOfSolver == KindOfSolver.SophisticatedSolver || metaData.kindOfSolver == KindOfSolver.SophisticatedSolvers)
-                {
-                    Restart();
-                }
+                RuntimeExceeded();
                 return;
             }
-
         }
         private void ThreadFinished(int indexThread)
         {
@@ -193,6 +189,21 @@ namespace BwInf36Runde2Aufgabe1
             {
                 metaData.mainWindow.TextBoxInput.Text = (metaData.input + 2).ToString();
                 Start();
+            }
+            else
+            {
+                metaData.logger.Stop();
+            }
+        }
+        private void RuntimeExceeded()
+        {
+            metaData.logger.Print(string.Format("Executiontime of {0} ticks exceeded", metaData.maxTick));
+            metaData.logger.Print(string.Format("Stopping all {0} threads", metaData.threads.Count));
+            AbortAllThreads();
+            dispatcherTimer.Stop();
+            if (metaData.kindOfSolver == KindOfSolver.SophisticatedSolver || metaData.kindOfSolver == KindOfSolver.SophisticatedSolvers)
+            {
+                Restart();
             }
         }
         private int GetFinsishedThreads()
