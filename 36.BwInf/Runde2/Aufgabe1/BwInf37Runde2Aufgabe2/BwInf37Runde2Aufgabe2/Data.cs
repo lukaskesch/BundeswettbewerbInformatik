@@ -60,18 +60,13 @@ namespace BwInf36Runde2Aufgabe1
     }
     public class Data
     {
-        public KindOfSolver kindOfSolver = KindOfSolver.AverageSolver;
+        public KindOfSolver kindOfSolver;
         public int solverIndex;
         public double ElapsedSeconds;
         public bool OddNumberOfBricks;
         public int NumberOfBricks;
         public int height;
         public int length;
-
-        ///// <summary>
-        ///// Stores if the ith joint is free
-        ///// </summary>
-        //public static bool[] FreeJoints;
 
         /// <summary>
         /// Stores the width of the brick in the ith row in the jth slot
@@ -112,7 +107,6 @@ namespace BwInf36Runde2Aufgabe1
             height = (NumberOfBricks + 2) / 2;
             length = (NumberOfBricks * (NumberOfBricks + 1)) / 2;
 
-            //FreeJoints = new bool[length];
             CurrentJointPosition = new int[height];
             NumberOfBricksInGivenRow = new int[height];
             Bricks = new int[height, NumberOfBricks];

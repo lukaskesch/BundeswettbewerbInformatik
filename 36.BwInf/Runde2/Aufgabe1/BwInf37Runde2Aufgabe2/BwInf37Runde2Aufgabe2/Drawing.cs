@@ -32,14 +32,25 @@ namespace BwInf36Runde2Aufgabe1
         public void Draw()
         {
             LockUI();
+
+            if (!data.OddNumberOfBricks)
+            {
+                data.OddNumberOfBricks = true;
+                SetCanvasScale();
+                Wait(canvas);
+                DrawAllBricks();
+                Wait(canvas);
+                SaveImage1();
+                data.OddNumberOfBricks = false;
+            }
+
+            mainWindow.CanvasGrid.Children.Clear();
             SetCanvasScale();
             Wait(canvas);
             DrawAllBricks();
             Wait(canvas);
-
             SaveImage1();
             //SaveImage2();
-
             UnlockUI();
         }
         private void LockUI()
@@ -190,7 +201,9 @@ namespace BwInf36Runde2Aufgabe1
 
             // Create a file stream for saving image
             Directory.CreateDirectory("Results");
-            string path = string.Format(@"Results\{0}-1.png", data.NumberOfBricks.ToString());
+            int numberOfBricks = data.NumberOfBricks;
+            if (data.OddNumberOfBricks) numberOfBricks++;
+            string path = string.Format(@"Results\{0}-1.png", numberOfBricks);
 
             using (FileStream outStream = new FileStream(path, FileMode.Create))
             {

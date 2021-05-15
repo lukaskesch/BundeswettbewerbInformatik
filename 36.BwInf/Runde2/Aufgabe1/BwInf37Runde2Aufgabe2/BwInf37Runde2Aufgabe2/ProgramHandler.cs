@@ -25,7 +25,7 @@ namespace BwInf36Runde2Aufgabe1
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 
-            Process.Start(System.AppDomain.CurrentDomain.BaseDirectory);
+            Process.Start(AppDomain.CurrentDomain.BaseDirectory);
         }
         public void Start()
         {
