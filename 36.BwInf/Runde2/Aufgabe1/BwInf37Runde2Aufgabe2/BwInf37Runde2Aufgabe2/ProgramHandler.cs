@@ -38,6 +38,7 @@ namespace BwInf36Runde2Aufgabe1
         }
         private void Restart()
         {
+            metaData.epoch++;
             metaData.Reset();
             PrepareDatastructures();
             Calculate();
@@ -164,7 +165,7 @@ namespace BwInf36Runde2Aufgabe1
         {
             if ((metaData.tick++) % 5 == 0)
             {
-                metaData.logger.Print(string.Format("Tick #{0}", metaData.tick - 1));
+                metaData.logger.Print(string.Format("(n={0}, epoch={1}) Tick #{2} ", metaData.input, metaData.epoch, metaData.tick - 1));
             }
 
             int indexThread = GetFinsishedThreads();

@@ -11,6 +11,7 @@ namespace BwInf36Runde2Aufgabe1
     {
         public int input;
         public int tick;
+        public int epoch;
         public readonly int maxTick;
         public int solutionIndex;
         public Logger logger;
@@ -21,6 +22,7 @@ namespace BwInf36Runde2Aufgabe1
 
         public MetaData(MainWindow AMainWindow)
         {
+            epoch = 0;
             tick = 0;
             maxTick = 120;
             solutionIndex = -1;
@@ -36,7 +38,6 @@ namespace BwInf36Runde2Aufgabe1
             tick = 0;
             solutionIndex = -1;
         }
-
     }
     public struct CalculationThread
     {
