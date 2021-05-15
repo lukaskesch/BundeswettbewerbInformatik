@@ -26,8 +26,10 @@ namespace BwInf36Runde2Aufgabe1
         }
         public void Start()
         {
+            metaData.Reset();
             ReadInput();
             PrepareDatastructures();
+            LockUI();
             Calculate();
             dispatcherTimer.Start();
         }
@@ -38,7 +40,23 @@ namespace BwInf36Runde2Aufgabe1
             Calculate();
             dispatcherTimer.Start();
         }
-
+        public void Stop()
+        {
+            metaData.logger.Print("User requested stop");
+            dispatcherTimer.Stop();
+            AbortAllThreads();
+            UnlockUI();
+        }
+        private void LockUI()
+        {
+            metaData.mainWindow.ButtonCalculate.Visibility = Visibility.Collapsed;
+            metaData.mainWindow.ButtonStop.Visibility = Visibility.Visible;
+        }
+        private void UnlockUI()
+        {
+            metaData.mainWindow.ButtonStop.Visibility = Visibility.Collapsed;
+            metaData.mainWindow.ButtonCalculate.Visibility = Visibility.Visible;
+        }
         private void ReadInput()
         {
             int NumberOfBricks;
@@ -80,6 +98,8 @@ namespace BwInf36Runde2Aufgabe1
 
             metaData.input = NumberOfBricks;
             metaData.logger.Print(string.Format("Requested {0} for n = {1}", metaData.kindOfSolver, metaData.input));
+
+
         }
         private void PrepareDatastructures()
         {
@@ -147,6 +167,7 @@ namespace BwInf36Runde2Aufgabe1
                 AbortAllUnfinishedThreads();
                 metaData.solutionIndex = indexThread;
                 PrintOutput();
+                UnlockUI();
                 return;
             }
 
@@ -156,6 +177,10 @@ namespace BwInf36Runde2Aufgabe1
                 metaData.logger.Print(string.Format("Stopping all {0} threads", metaData.threads.Count));
                 AbortAllThreads();
                 dispatcherTimer.Stop();
+                if (metaData.kindOfSolver == KindOfSolver.SophisticatedSolver || metaData.kindOfSolver == KindOfSolver.SophisticatedSolvers)
+                {
+                    Restart();
+                }
                 return;
             }
 

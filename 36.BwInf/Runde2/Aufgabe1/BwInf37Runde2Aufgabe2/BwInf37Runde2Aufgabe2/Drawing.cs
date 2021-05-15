@@ -31,12 +31,25 @@ namespace BwInf36Runde2Aufgabe1
         }
         public void Draw()
         {
-            mainWindow.CanvasGrid.Children.Clear();
+            LockUI();
             SetCanvasScale();
             Warten(canvas);
             DrawAllBricks();
             Warten(canvas);
             SaveImage();
+            UnlockUI();
+        }
+        private void LockUI()
+        {
+            mainWindow.CanvasGrid.Children.Clear();
+            mainWindow.ResizeMode = ResizeMode.NoResize;
+            //mainWindow.WindowState = WindowState.Minimized;
+            //Thread.SpinWait(500);
+        }
+        private void UnlockUI()
+        {
+            mainWindow.ResizeMode = ResizeMode.CanResize;
+            //mainWindow.WindowState = WindowState.Normal;
         }
         private void SetCanvasScale()
         {

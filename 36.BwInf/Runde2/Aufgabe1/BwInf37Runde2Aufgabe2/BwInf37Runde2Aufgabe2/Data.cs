@@ -22,7 +22,7 @@ namespace BwInf36Runde2Aufgabe1
         public MetaData(MainWindow AMainWindow)
         {
             tick = 0;
-            maxTick = 13;
+            maxTick = 120;
             solutionIndex = -1;
             mainWindow = AMainWindow;
             threads = new List<CalculationThread>();

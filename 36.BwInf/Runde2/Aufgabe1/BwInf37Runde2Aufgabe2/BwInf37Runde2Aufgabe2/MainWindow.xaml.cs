@@ -21,18 +21,21 @@ namespace BwInf36Runde2Aufgabe1
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        ProgramHandler programHandler;
         public MainWindow()
         {
             InitializeComponent();
+            programHandler = new ProgramHandler(this);
         }
 
-        private void ButtonBerechnen_Click(object sender, RoutedEventArgs e)
+        private void ButtonCalculate_Click(object sender, RoutedEventArgs e)
         {
-            ProgramHandler programHandler = new ProgramHandler(this);
             programHandler.Start();
         }
 
-
+        private void ButtonStop_Click(object sender, RoutedEventArgs e)
+        {
+            programHandler.Stop();
+        }
     }
 }
