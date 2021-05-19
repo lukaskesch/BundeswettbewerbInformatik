@@ -58,7 +58,7 @@ namespace BwInf36Runde2Aufgabe1
                 SetBeginningBricks();
                 Backtracking(data.height + 1);
             }
-            catch (Exception e)
+            catch (FoundSolutionExeptions)
             {
                 StopStopwatchAndSaveElapsedTime();
                 statistics.SaveStatistics();

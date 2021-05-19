@@ -24,7 +24,7 @@ namespace BwInf36Runde2Aufgabe1
         {
             epoch = 0;
             tick = 0;
-            maxTick = 120;
+            maxTick = 30;
             solutionIndex = -1;
             mainWindow = AMainWindow;
             threads = new List<CalculationThread>();

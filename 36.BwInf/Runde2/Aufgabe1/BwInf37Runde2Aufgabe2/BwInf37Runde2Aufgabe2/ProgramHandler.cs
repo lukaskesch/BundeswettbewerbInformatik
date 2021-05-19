@@ -29,6 +29,7 @@ namespace BwInf36Runde2Aufgabe1
         }
         public void Start()
         {
+            metaData.epoch = 0;
             metaData.Reset();
             ReadInput();
             PrepareDatastructures();
